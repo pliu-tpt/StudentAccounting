@@ -4,17 +4,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.studentaccounting.TransactionListFragment.Companion.MYTAG
 import com.example.studentaccounting.databinding.ActivityMainBinding
 import com.example.studentaccounting.db.AppDatabase
 //import com.example.studentaccounting.db.TransactionDatabase
-import java.util.logging.Filter
 
 //import nl.hiddewieringa.money.monetaryContext
 //import nl.hiddewieringa.money.ofCurrency
@@ -86,18 +82,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         // TODO("Import/Export Table")
-        // TODO("Show Table with Filtering/Sort Options")
-        // TODO("Retrofit Interface with Google Sheet")
-        // TODO("Graph Navigation")
-        // TODO("")
-        // TODO("")
-        // TODO("")
+        // TODO("Retrofit, App Data for Google Drive: Synchronize databases")
+        // TODO("General Settings : Add a possibility to change prefCurrency")
+        // TODO("Line Graphs : Select two months and a cat and the line graph is generated using AACharts")
+        // TODO("A notification button to add a transaction really quickly")
 
-//        val reference = 1.ofCurrency<FastMoney>("USD", monetaryContext {
-//            set(MathContext.DECIMAL128)
-//        })
-//        val rateProvider = MonetaryConversions.getExchangeRateProvider("ECB", "IMF");
-//        val rateToInsertWhenNewCurrency = reference.convertTo(NewCurrencyName, rateProvider).toDouble()??
     }
 
 }
