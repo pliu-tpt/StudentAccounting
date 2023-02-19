@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">StudentAccounting</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="other">Other</string>
+    <string name="select_currency">Currency</string>
+    <string name="type_a_title">Type a title:</string>
+</resources>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/transactionListFragment"
+        android:icon="@drawable/ic_home_24"
+        android:title="Home" />
+    <item
+        android:id="@+id/filterFragment"
+        android:icon="@drawable/ic_filter_list_24"
+        android:title="Filter" />
+    <item
+        android:id="@+id/timeSeriesFragment"
+        android:icon="@drawable/ic_chart_24"
+        android:title="Time" />
+    <item
+        android:id="@+id/budgetFragment"
+        android:icon="@drawable/ic_pie_chart_24"
+        android:title="Budget" />
+    <item
+        android:id="@+id/countsFragment"
+        android:icon="@drawable/ic_numbers_24"
+        android:title="Counts" />
+</menu>

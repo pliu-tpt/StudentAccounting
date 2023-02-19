@@ -1,0 +1,83 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+}
+
+android {
+    namespace 'com.example.studentaccounting'
+    compileSdk 33
+
+    packagingOptions {
+        pickFirst 'javamoney.properties'
+    }
+
+    defaultConfig {
+        applicationId "com.example.studentaccounting"
+        minSdk 26
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    viewBinding.enabled = true
+}
+
+dependencies {
+//    implementation 'com.android.support:design:28.0.0-alpha1'
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+    def nav_version = "2.5.3" // cf. https://developer.android.com/jetpack/androidx/releases/navigation
+
+    implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
+    implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+
+    def room_version = "2.5.0"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    def javaMoneyVersion = "1.4.2"
+    implementation "org.javamoney:moneta:$javaMoneyVersion"
+
+//    def moneyKotlinVersion = "1.0.0"
+//    implementation "nl.hiddewieringa:money-kotlin:$moneyKotlinVersion"
+
+    def retrofit_version = "2.9.0" // last version cf. https://square.github.io/retrofit/
+
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit_version" // convert json to Java/kotlin format
+    implementation "com.squareup.retrofit2:converter-simplexml:$retrofit_version" // convert xml
+
+    implementation "com.squareup.okhttp3:logging-interceptor:4.10.0" // See https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor
+
+    implementation 'com.opencsv:opencsv:5.0'
+
+    implementation 'com.google.android.gms:play-services-auth:20.4.1'
+
+    implementation 'com.github.AAChartModel:AAChartCore-Kotlin:7.1.0'
+}

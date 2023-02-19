@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/transactionListFragment">
+
+    <fragment
+        android:id="@+id/transactionListFragment"
+        android:name="com.example.studentaccounting.TransactionListFragment"
+        android:label="fragment_transaction_list"
+        tools:layout="@layout/fragment_transaction_list" >
+        <action
+            android:id="@+id/action_transactionListFragment_to_selectIsSpendingFragment"
+            app:destination="@id/selectIsSpendingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectCategoryFragment"
+        android:name="com.example.studentaccounting.SelectCategoryFragment"
+        android:label="fragment_select_category"
+        tools:layout="@layout/fragment_select_category" >
+        <action
+            android:id="@+id/action_selectCategoryFragment_to_selectSubcategoryFragment"
+            app:destination="@id/selectSubcategoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectSubcategoryFragment"
+        android:name="com.example.studentaccounting.SelectSubcategoryFragment"
+        android:label="fragment_select_subcategory"
+        tools:layout="@layout/fragment_select_subcategory" >
+        <action
+            android:id="@+id/action_selectSubcategoryFragment_to_selectTransactionTypeFragment"
+            app:destination="@id/selectTransactionTypeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectTransactionTypeFragment"
+        android:name="com.example.studentaccounting.SelectTransactionTypeFragment"
+        android:label="fragment_select_transaction_type"
+        tools:layout="@layout/fragment_select_transaction_type" >
+        <action
+            android:id="@+id/action_selectTransactionTypeFragment_to_selectAmountFragment"
+            app:destination="@id/selectAmountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectAmountFragment"
+        android:name="com.example.studentaccounting.SelectAmountFragment"
+        android:label="fragment_select_amount"
+        tools:layout="@layout/fragment_select_amount" >
+        <action
+            android:id="@+id/action_selectAmountFragment_to_transactionSummaryFragment"
+            app:destination="@id/transactionSummaryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/transactionSummaryFragment"
+        android:name="com.example.studentaccounting.TransactionSummaryFragment"
+        android:label="fragment_transaction_summary"
+        tools:layout="@layout/fragment_transaction_summary" >
+        <action
+            android:id="@+id/action_transactionSummaryFragment_to_transactionListFragment"
+            app:destination="@id/transactionListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectIsSpendingFragment"
+        android:name="com.example.studentaccounting.SelectIsSpendingFragment"
+        android:label="fragment_select_is_spending"
+        tools:layout="@layout/fragment_select_is_spending" >
+        <action
+            android:id="@+id/action_selectIsSpendingFragment_to_selectCategoryFragment"
+            app:destination="@id/selectCategoryFragment" />
+        <action
+            android:id="@+id/action_selectIsSpendingFragment_to_selectTransactionTypeFromFragment"
+            app:destination="@id/selectTransactionTypeFromFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectTransactionTypeFromFragment"
+        android:name="com.example.studentaccounting.SelectTransactionTypeFromFragment"
+        android:label="fragment_select_transaction_type_from"
+        tools:layout="@layout/fragment_select_transaction_type_from" >
+        <action
+            android:id="@+id/action_selectTransactionTypeFromFragment_to_selectTransactionTypeToFragment"
+            app:destination="@id/selectTransactionTypeToFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectTransactionTypeToFragment"
+        android:name="com.example.studentaccounting.SelectTransactionTypeToFragment"
+        android:label="fragment_select_transaction_type_to"
+        tools:layout="@layout/fragment_select_transaction_type_to" >
+        <action
+            android:id="@+id/action_selectTransactionTypeToFragment_to_selectAmountFragment"
+            app:destination="@id/selectAmountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/filterFragment"
+        android:name="com.example.studentaccounting.FilterFragment"
+        android:label="fragment_filter"
+        tools:layout="@layout/fragment_filter" />
+    <fragment
+        android:id="@+id/timeSeriesFragment"
+        android:name="com.example.studentaccounting.TimeSeriesFragment"
+        android:label="fragment_time_series"
+        tools:layout="@layout/fragment_time_series" />
+    <fragment
+        android:id="@+id/countsFragment"
+        android:name="com.example.studentaccounting.CountsFragment"
+        android:label="fragment_counts"
+        tools:layout="@layout/fragment_counts" />
+    <fragment
+        android:id="@+id/budgetFragment"
+        android:name="com.example.studentaccounting.BudgetFragment"
+        android:label="fragment_budget"
+        tools:layout="@layout/fragment_budget" />
+</navigation>
