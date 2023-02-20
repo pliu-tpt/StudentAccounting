@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/transactionListFragment"
+        android:id="@+id/transactionListContainerFragment"
         android:icon="@drawable/ic_home_24"
-        android:title="Home" />
+        android:title="@string/home" />
     <item
         android:id="@+id/filterFragment"
         android:icon="@drawable/ic_filter_list_24"
-        android:title="Filter" />
+        android:title="@string/filter" />
     <item
         android:id="@+id/timeSeriesFragment"
         android:icon="@drawable/ic_chart_24"
-        android:title="Time" />
+        android:title="@string/time" />
     <item
         android:id="@+id/budgetFragment"
         android:icon="@drawable/ic_pie_chart_24"
-        android:title="Budget" />
+        android:title="@string/budget" />
     <item
         android:id="@+id/countsFragment"
         android:icon="@drawable/ic_numbers_24"
-        android:title="Counts" />
+        android:title="@string/counts" />
 </menu>

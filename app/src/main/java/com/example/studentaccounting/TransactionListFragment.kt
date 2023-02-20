@@ -121,6 +121,34 @@ class TransactionListFragment : Fragment() {
             openImportMenu(it)
         }
 
+//        val navHostFragment = childFragmentManager.findFragmentById(R.id.topLayout) as NavHostFragment
+//        val navController = navHostFragment.navController
+        // hide nav bar when entering a transaction
+//        navController.addOnDestinationChangedListener{
+//                _, destination, _ ->
+//            run {
+//                val listOfFragments = arrayOf(
+//                    R.id.selectIsSpendingFragment,
+//                    R.id.selectAmountFragment,
+//                    R.id.selectCategoryFragment,
+//                    R.id.selectSubcategoryFragment,
+//                    R.id.selectTransactionTypeFragment,
+//                    R.id.selectTransactionTypeFromFragment,
+//                    R.id.selectTransactionTypeToFragment,
+//                    R.id.transactionSummaryFragment)
+//
+//                Log.i(MYTAG, "The nav id is ${destination.id}, ${destination.displayName}")
+//
+//                if (destination.id in listOfFragments) {
+//                    binding.bNavView.visibility = View.GONE
+//                    this.supportActionBar?.hide()
+//                } else {
+//                    activityMainBinding.bNavView.visibility = View.VISIBLE
+//                    this.supportActionBar?.show()
+//                }
+//            }
+//        }
+
         return binding.root
     }
 

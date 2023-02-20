@@ -1,15 +1,16 @@
 package com.example.studentaccounting
 
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
-import com.example.studentaccounting.TransactionListFragment.Companion.MYTAG
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.example.studentaccounting.databinding.ActivityMainBinding
 import com.example.studentaccounting.db.AppDatabase
+import com.google.android.material.navigation.NavigationBarView
+
 //import com.example.studentaccounting.db.TransactionDatabase
 
 //import nl.hiddewieringa.money.monetaryContext
@@ -25,6 +26,36 @@ class MainActivity : AppCompatActivity() {
     private lateinit var filterViewModel: FilterViewModel
     private lateinit var countsViewModel: CountsViewModel
     private lateinit var timeSeriesViewModel: TimeSeriesViewModel
+
+    private lateinit var viewPager: ViewPager2
+    private lateinit var pagerViewAdapter: PagerViewAdapter
+
+    private val mOnItemSelectedListener = NavigationBarView.OnItemSelectedListener setOnItemSelectedListener@{
+            item ->
+        when (item.itemId) {
+            R.id.transactionListContainerFragment -> {
+                viewPager.currentItem = 0
+                return@setOnItemSelectedListener true
+            }
+            R.id.filterFragment -> {
+                viewPager.currentItem = 1
+                return@setOnItemSelectedListener true
+            }
+            R.id.timeSeriesFragment -> {
+                viewPager.currentItem = 2
+                return@setOnItemSelectedListener true
+            }
+            R.id.budgetFragment -> {
+                viewPager.currentItem = 3
+                return@setOnItemSelectedListener true
+            }
+            R.id.countsFragment -> {
+                viewPager.currentItem = 4
+                return@setOnItemSelectedListener true
+            }
+        }
+        false
+    }
 
 //    val fragmentHome: Fragment = TransactionListFragment()
 //    val fragmentFilter: Fragment = FilterFragment()
@@ -52,44 +83,43 @@ class MainActivity : AppCompatActivity() {
 
         countsViewModel = ViewModelProvider(this)[CountsViewModel::class.java]
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.topLayout) as NavHostFragment
-        activityMainBinding.bNavView.setupWithNavController(navHostFragment.navController)
+        // Pager View related
+        viewPager = activityMainBinding.mainViewPager
 
-        // hide nav bar when entering a transaction
-        navHostFragment.navController.addOnDestinationChangedListener{
-            _, destination, _ ->
-            run {
-                val listOfFragments = arrayOf(
-                    R.id.selectIsSpendingFragment,
-                    R.id.selectAmountFragment,
-                    R.id.selectCategoryFragment,
-                    R.id.selectSubcategoryFragment,
-                    R.id.selectTransactionTypeFragment,
-                    R.id.selectTransactionTypeFromFragment,
-                    R.id.selectTransactionTypeToFragment,
-                    R.id.transactionSummaryFragment)
+        pagerViewAdapter = PagerViewAdapter(this)
+        viewPager.adapter = pagerViewAdapter
 
-                Log.i(MYTAG, "The nav id is ${destination.id}, ${destination.displayName}")
-
-                if (destination.id in listOfFragments) {
-                    activityMainBinding.bNavView.visibility = View.GONE
-                    this.supportActionBar?.hide()
-                } else {
-                    activityMainBinding.bNavView.visibility = View.VISIBLE
-                    this.supportActionBar?.show()
-                }
+        // Pager notifying the BNView of a change
+        viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                activityMainBinding.bNavView.menu.getItem(position).isChecked = true
             }
-        }
+        })
 
-        // TODO("Import/Export Table")
-        // TODO("Retrofit, App Data for Google Drive: Synchronize databases")
-        // TODO("General Settings : Add a possibility to change prefCurrency")
-        // TODO("Line Graphs : Select two months and a cat and the line graph is generated using AACharts")
-        // TODO("A notification button to add a transaction really quickly")
-
-        // Test Graph Commit
-
+        // BNView notifying the Pager of a change
+        activityMainBinding.bNavView.setOnItemSelectedListener(mOnItemSelectedListener)
     }
-
 }
 
+// Adapter related to the Pager
+class PagerViewAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
+    override fun getItemCount(): Int = 5
+    override fun createFragment(position: Int): Fragment {
+        return when (position) {
+            0 -> TransactionListContainerFragment()
+            1 -> FilterFragment()
+            2 -> TimeSeriesFragment()
+            3 -> BudgetFragment()
+            4 -> CountsFragment()
+            else -> TransactionListContainerFragment()
+        }
+    }
+}
+
+// TODO("Import/Export Table")
+// TODO("Retrofit, App Data for Google Drive: Synchronize databases")
+// TODO("General Settings : Add a possibility to change prefCurrency")
+// TODO("Line Graphs : Select two months and a cat and the line graph is generated using AACharts")
+// TODO("A notification button to add a transaction really quickly")
+
+// Test Graph Commit

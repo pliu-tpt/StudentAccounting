@@ -7,56 +7,60 @@
     android:layout_height="match_parent"
     tools:context=".SelectTransactionTypeFragment">
 
-    <Button
-        android:id="@+id/btnTypeNextTo"
-        android:layout_width="94dp"
-        android:layout_height="51dp"
-        android:text="Add"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.845"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.185" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <EditText
-        android:id="@+id/etNewTypeTo"
-        android:layout_width="207dp"
-        android:layout_height="56dp"
-        android:ems="10"
-        android:hint="New Type"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.119"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.19" />
+        <TextView
+            android:id="@+id/titleTransactionTypeTo"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_margin="15dp"
+            android:layout_weight="15"
+            android:text="@string/transfer_to"
+            android:textColor="@color/purple_700"
+            android:textSize="34sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/titleTransactionTypeTo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Transfer To:"
-        android:textColor="@color/purple_700"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.175"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.043" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:orientation="horizontal">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvTransactionTypeTo"
-        android:layout_width="0dp"
-        android:layout_height="485dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        app:spanCount="2" />
+            <EditText
+                android:id="@+id/etNewTypeTo"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="15sp"
+                android:ems="10"
+                android:hint="@string/new_type"
+                android:inputType="textPersonName"
+                android:importantForAutofill="no" />
+
+            <Button
+                android:id="@+id/btnTypeNextTo"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="15sp"
+                android:minWidth="120dp"
+                android:text="@string/add" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvTransactionTypeTo"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="15sp"
+            android:layout_weight="50"
+            app:spanCount="2">
+
+        </androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
