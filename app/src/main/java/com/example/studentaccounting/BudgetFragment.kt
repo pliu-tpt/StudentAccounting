@@ -9,10 +9,9 @@ import android.view.View.*
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.studentaccounting.TransactionListFragment.Companion.MYTAG
+import com.example.studentaccounting.databinding.CommonFilterLayoutBinding
 import com.example.studentaccounting.databinding.FragmentBudgetBinding
-import com.example.studentaccounting.databinding.FragmentSelectAmountBinding
 import com.example.studentaccounting.db.entities.relations.OptionWithTotal
 import com.example.studentaccounting.db.entities.relations.TransactionWithConversion
 import com.github.aachartmodel.aainfographics.aachartcreator.AAChartModel
@@ -31,6 +30,7 @@ class BudgetFragment : Fragment() {
     private val filterViewModel : FilterViewModel by activityViewModels()
 
     private lateinit var binding: FragmentBudgetBinding
+    private lateinit var filterLayoutBinding: CommonFilterLayoutBinding
 
     private lateinit var chartViewSpent : AAChartView
     private lateinit var chartViewEarned : AAChartView
@@ -48,6 +48,7 @@ class BudgetFragment : Fragment() {
     ): View? {
 
         binding = FragmentBudgetBinding.inflate(inflater, container, false)
+        filterLayoutBinding = CommonFilterLayoutBinding.bind(binding.root)
 
         updateFilteredTransactions()
         setupAutoCompleteTextView()
@@ -81,20 +82,20 @@ class BudgetFragment : Fragment() {
             updateFilteredTransactions()
         }
 
-        binding.tvMonth.setOnClickListener {
+        filterLayoutBinding.tvMonth.setOnClickListener {
             popupMonthDialog()
         }
 
-        binding.cbCat.setOnCheckedChangeListener { _, isChecked ->
+        filterLayoutBinding.cbCat.setOnCheckedChangeListener { _, isChecked ->
             when (isChecked) {
                 true -> {
                     filterViewModel.updateCat("-1")
                 }
-                false -> {enableEditText(binding.actvCategory)}
+                false -> {enableEditText(filterLayoutBinding.actvCategory)}
             }
         }
 
-        binding.cbMonth.setOnCheckedChangeListener { _, isChecked ->
+        filterLayoutBinding.cbMonth.setOnCheckedChangeListener { _, isChecked ->
             when (isChecked) {
                 true -> {
                     filterViewModel.updateMonthAndYear(-1, -1)
@@ -125,7 +126,7 @@ class BudgetFragment : Fragment() {
     }
 
     private fun popupMonthDialog() {
-        if (!binding.cbMonth.isChecked) {
+        if (!filterLayoutBinding.cbMonth.isChecked) {
             MonthYearPickerDialog(filterViewModel.date).apply {
                 setListener { _, year, month, dayOfMonth ->
                     Toast.makeText(
@@ -135,8 +136,8 @@ class BudgetFragment : Fragment() {
                     ).show()
                     filterViewModel.updateMonthAndYear(month + 1, year)
                     filterViewModel.updateDate(Date(year + 1, month, dayOfMonth))
-                    binding.tvMonth.text = "${String.format("%02d", month + 1)}-$year"
-                    binding.cbMonth.isChecked = false
+                    filterLayoutBinding.tvMonth.text = "${String.format("%02d", month + 1)}-$year"
+                    filterLayoutBinding.cbMonth.isChecked = false
                 }
                 show(this@BudgetFragment.parentFragmentManager, "MonthYearPickerDialog")
             }
@@ -302,20 +303,20 @@ class BudgetFragment : Fragment() {
     }
 
     private fun resetMonth() {
-        binding.tvMonth.text = "Select Month"
-        binding.cbMonth.isChecked = true
+        filterLayoutBinding.tvMonth.text = "Select Month"
+        filterLayoutBinding.cbMonth.isChecked = true
     }
 
     private fun resetCat() {
-        binding.actvCategory.text = null
-        binding.cbCat.isChecked = true
-        disableEditText(binding.actvCategory)
+        filterLayoutBinding.actvCategory.text = null
+        filterLayoutBinding.cbCat.isChecked = true
+        disableEditText(filterLayoutBinding.actvCategory)
     }
 
     private fun optionListItemClicked(option:OptionWithTotal){
         if (filterViewModel.filters.cat.value == "-1"){
             filterViewModel.updateCat(option.option)
-            binding.cbCat.isChecked = false
+            filterLayoutBinding.cbCat.isChecked = false
         }
     }
 
@@ -341,7 +342,7 @@ class BudgetFragment : Fragment() {
     }
 
     private fun setupAutoCompleteTextView(){
-        autoCompleteTextView = binding.actvCategory
+        autoCompleteTextView = filterLayoutBinding.actvCategory
         adapterCategory = ArrayAdapter(requireContext(),
             R.layout.spinner_currency_item,
             mutableListOf<String>())
@@ -351,7 +352,7 @@ class BudgetFragment : Fragment() {
             AdapterView.OnItemClickListener { parent, _, _, id ->
                 var item = parent?.getItemAtPosition(id.toInt()).toString()
                 filterViewModel.updateCat(item)
-                binding.cbCat.isChecked = false
+                filterLayoutBinding.cbCat.isChecked = false
             }
 
 //        autoCompleteTextView.setText(filterViewModel.filters.cat.value)
