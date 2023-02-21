@@ -27,29 +27,7 @@
             android:textSize="34sp"
             android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/etNewCategory"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="15sp"
-                android:ems="10"
-                android:hint="@string/new_category"
-                android:importantForAutofill="no"
-                android:inputType="textPersonName" />
-
-            <Button
-                android:id="@+id/btnCatNext"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="15sp"
-                android:text="@string/add" />
-        </LinearLayout>
+        <include layout="@layout/common_new_add_layout"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvCategory"

@@ -3,32 +3,40 @@ package com.example.studentaccounting
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.studentaccounting.databinding.CommonNewAddLayoutBinding
 import com.example.studentaccounting.databinding.FragmentSelectSubcategoryBinding
-import com.example.studentaccounting.databinding.FragmentTransactionSummaryBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 class SelectSubcategoryFragment : SelectFragment() {
 
     private val viewModel : TransactionViewModel by activityViewModels()
+
+
+/*
+private val binding: FragmentSelectSubcategoryBinding get() = _binding!!
+private var _binding: FragmentSelectSubcategoryBinding? = null
+
+private val newAddLayoutBinding: CommonNewAddLayoutBinding get() = _newAddLayoutBinding!!
+private var _newAddLayoutBinding: CommonNewAddLayoutBinding? = null
+*/
+
     private lateinit var binding: FragmentSelectSubcategoryBinding
+    private lateinit var newAddLayoutBinding: CommonNewAddLayoutBinding
 
     private lateinit var adapter: OptionRecyclerViewAdapter
 
+    private var fragmentString: String
+
     init {
         nextPageResId = R.id.action_selectSubcategoryFragment_to_selectTransactionTypeFragment
+        fragmentString = resources.getString(R.string.new_sub_category)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,20 +55,23 @@ class SelectSubcategoryFragment : SelectFragment() {
     ): View? {
 
         binding = FragmentSelectSubcategoryBinding.inflate(inflater, container, false)
+        newAddLayoutBinding = CommonNewAddLayoutBinding.bind(binding.root)
 
         initRecyclerView()
 
+        initNewAdd(fragmentString)
+
         viewModel.selectedSubcat.observe(viewLifecycleOwner) {
-            binding.etSubcat.setText(it.toString())
+            newAddLayoutBinding.etNew.setText(it.toString())
         }
 
-        binding.btnSubcatNext.setOnClickListener {
-            if (!TextUtils.isEmpty(binding.etSubcat.text.toString())){
-                nextPageAction(binding.etSubcat.text.toString())
+        newAddLayoutBinding.btnNewNext.setOnClickListener {
+            if (!TextUtils.isEmpty(newAddLayoutBinding.etNew.text.toString())){
+                nextPageAction(newAddLayoutBinding.etNew.text.toString())
             } else {
                 Toast.makeText(
                     requireContext(),
-                    "Please Enter a Valid Sub-Category",
+                    "Please Enter a Valid $fragmentString",
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -68,6 +79,16 @@ class SelectSubcategoryFragment : SelectFragment() {
 
         // Inflate the layout for this fragment
         return binding.root
+    }
+
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        _binding = null
+//        _newAddLayoutBinding = null
+//    }
+
+    private fun initNewAdd(string: String){
+        newAddLayoutBinding.etNew.hint = string
     }
 
     private fun initRecyclerView(){

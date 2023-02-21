@@ -18,18 +18,16 @@
     <string name="transfer">Transfer</string>
     <string name="select_a_subcategory">Select a Subcategory:</string>
     <string name="new_sub_category">New Sub-Category</string>
-    <string name="transaction_type">Transaction Type:</string>
-    <string name="new_type">New Type</string>
-    <string name="transfer_from">Transfer From:</string>
-    <string name="transfer_to">Transfer To:</string>
+    <string name="transaction_type_column">Transaction Type:</string>
+    <string name="new_type_column">New Type</string>
+    <string name="transfer_from_column">Transfer From:</string>
+    <string name="transfer_to_column">Transfer To:</string>
     <string name="your_transactions">Your Transactions</string>
     <string name="upload">Upload</string>
     <string name="download">download</string>
     <string name="add_a_transaction">Add a Transaction</string>
-    <string name="summary">Summary :</string>
+    <string name="summary_column">Summary :</string>
     <string name="amount">Amount:</string>
-    <string name="category">Category:</string>
-    <string name="sub_category">Sub-Category:</string>
     <string name="type">Type:</string>
     <string name="name_column">Name:</string>
     <string name="currency_column">Currency:</string>
@@ -43,4 +41,9 @@
     <string name="time">Time</string>
     <string name="budget">Budget</string>
     <string name="counts">Counts</string>
+    <string name="select_a_month">Select a Month</string>
+    <string name="all_time">All Time</string>
+    <string name="all_categories">All Categories</string>
+    <string name="new_type">New Type</string>
+    <string name="category">Category</string>
 </resources>

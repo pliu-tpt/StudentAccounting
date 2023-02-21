@@ -22,35 +22,12 @@
             android:layout_height="0dp"
             android:layout_margin="15dp"
             android:layout_weight="15"
-            android:text="@string/transfer_to"
+            android:text="@string/transfer_to_column"
             android:textColor="@color/purple_700"
             android:textSize="34sp"
             android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/etNewTypeTo"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="15sp"
-                android:ems="10"
-                android:hint="@string/new_type"
-                android:inputType="textPersonName"
-                android:importantForAutofill="no" />
-
-            <Button
-                android:id="@+id/btnTypeNextTo"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="15sp"
-                android:minWidth="120dp"
-                android:text="@string/add" />
-        </LinearLayout>
+        <include layout="@layout/common_new_add_layout"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvTransactionTypeTo"
