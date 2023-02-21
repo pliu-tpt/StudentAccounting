@@ -51,25 +51,27 @@ class TransactionViewModel(private val dao:TransactionDao, private val currencyD
         initSelection()
     }
 
+    // The following is executed SEQUENTIALLY by using suspend for both insertCurrencyToDao and dao.insertTransaction
     fun insertTransaction(transaction: Transaction) = viewModelScope.launch {
-        dao.insertTransaction(transaction)
         insertCurrencyToDao(transaction.currency)
+        dao.insertTransaction(transaction)
     }
 
+    // The following is executed SEQUENTIALLY by using suspend for both insertCurrencyToDao and dao.insertTransaction
     fun insertTransactionAnyID(transaction: Transaction) = viewModelScope.launch {
+        insertCurrencyToDao(transaction.currency)
         dao.insertTransaction(
                 Transaction(
                     0,
-                    transaction.name!!,
-                    transaction.category!!,
-                    transaction.subcategory!!,
-                    transaction.type!!,
-                    transaction.amount!!,
-                    transaction.currency!!,
-                    transaction.isSpending!!,
-                    transaction.date!!)
+                    transaction.name,
+                    transaction.category,
+                    transaction.subcategory,
+                    transaction.type,
+                    transaction.amount,
+                    transaction.currency,
+                    transaction.isSpending,
+                    transaction.date)
         )
-        insertCurrencyToDao(transaction.currency)
     }
 
     fun insertSelectedTransaction() = viewModelScope.launch {
@@ -183,23 +185,23 @@ class TransactionViewModel(private val dao:TransactionDao, private val currencyD
         return dao.getAllFilteredWithPrefCurrency(filters)
     }
 
-    private fun insertCurrencyToDao(currency: String){
-        viewModelScope.launch {
-            try {
-                val oneDollar =
-                    Monetary.getDefaultAmountFactory().setCurrency("USD").setNumber(1).create();
-                val conversionNewCurrency = MonetaryConversions.getConversion(currency, "IMF");
-                val convertedAmount = oneDollar.with(conversionNewCurrency).number.toDouble()
-                currencyDao.insertCurrency(
-                    Currency(
-                        currency,
-                        convertedAmount
-                    )
+    private suspend fun insertCurrencyToDao(currency: String){
+
+        try {
+            val oneDollar =
+                Monetary.getDefaultAmountFactory().setCurrency("USD").setNumber(1).create()
+            val conversionNewCurrency = MonetaryConversions.getConversion(currency, "IMF")
+            val convertedAmount = oneDollar.with(conversionNewCurrency).number.toDouble()
+            currencyDao.insertCurrency(
+                Currency(
+                    currency,
+                    convertedAmount
                 )
-            } catch (e: MonetaryException) {
-                Log.i(MYTAG, "Failure: Currency DOESN'T EXIST")
-            }
+            )
+        } catch (e: MonetaryException) {
+            Log.i(MYTAG, "Failure: Currency DOESN'T EXIST")
         }
+
     }
 
     fun updateSelectedSubcat(subcat:String){

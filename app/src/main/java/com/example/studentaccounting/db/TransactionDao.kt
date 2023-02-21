@@ -1,14 +1,10 @@
 package com.example.studentaccounting.db
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.example.studentaccounting.TransactionListFragment.Companion.MYTAG
 import com.example.studentaccounting.db.entities.Currency
 import com.example.studentaccounting.db.entities.Transaction
-import com.example.studentaccounting.db.entities.relations.AmountWithCurrency
 import com.example.studentaccounting.db.entities.relations.OptionWithTotal
 import com.example.studentaccounting.db.entities.relations.TransactionWithConversion
 
@@ -72,27 +68,27 @@ interface TransactionDao {
     suspend fun getTransactionsByMonthAndYear(month: String, year: String): List<Transaction>
 
 
-    @Query("SELECT transaction_id, transaction_amount * rate AS transaction_amount, :preferredCurrency AS transaction_currency, isSpending " +
-            "FROM transaction_table AS t LEFT JOIN CurrencyToCurrencyView AS c ON transaction_currency = c.currency_name AND c.`currency_name:1` =:preferredCurrency")
-    suspend fun getTransactionsToPreferredCurrency(preferredCurrency: String) : List<AmountWithCurrency>
-
-    @Query("SELECT transaction_subcategory AS option, SUM(CASE WHEN isSpending = 1 THEN transaction_amount ELSE -transaction_amount END) AS total\n" +
-            "FROM (SELECT transaction_id, transaction_category, transaction_subcategory, transaction_amount * rate AS transaction_amount, :preferredCurrency AS transaction_currency, isSpending\n" +
-            "            FROM transaction_table AS t \n" +
-            "            LEFT JOIN CurrencyToCurrencyView AS c ON transaction_currency = c.currency_name AND c.`currency_name:1` =:preferredCurrency)\n" +
-            "WHERE transaction_category = :category\n" +
-            "GROUP BY transaction_subcategory\n" +
-            "ORDER BY total DESC")
-    suspend fun getSubcatAggregateGivenCat(category: String, preferredCurrency: String): List<OptionWithTotal>
-    // get for each subcategory (of a cat) a sum after having converted the currencies to the preferredCurrency (the amount is the amount SPENT)
-
-    @Query("SELECT transaction_category AS option, SUM(CASE WHEN isSpending = 1 THEN transaction_amount ELSE -transaction_amount END) AS total\n" +
-            "FROM (SELECT transaction_id, transaction_category, transaction_amount * rate AS transaction_amount, :preferredCurrency AS transaction_currency, isSpending\n" +
-            "            FROM transaction_table AS t \n" +
-            "            LEFT JOIN CurrencyToCurrencyView AS c ON transaction_currency = c.currency_name AND c.`currency_name:1` =:preferredCurrency)\n" +
-            "GROUP BY transaction_category\n" +
-            "ORDER BY total DESC")
-    suspend fun getCatAggregate(preferredCurrency: String): List<OptionWithTotal>
+//    @Query("SELECT transaction_id, transaction_amount * rate AS transaction_amount, :preferredCurrency AS transaction_currency, isSpending " +
+//            "FROM transaction_table AS t LEFT JOIN CurrencyToCurrencyView AS c ON transaction_currency = c.currency_name AND c.`currency_name:1` =:preferredCurrency")
+//    suspend fun getTransactionsToPreferredCurrency(preferredCurrency: String) : List<AmountWithCurrency>
+//
+//    @Query("SELECT transaction_subcategory AS option, SUM(CASE WHEN isSpending = 1 THEN transaction_amount ELSE -transaction_amount END) AS total\n" +
+//            "FROM (SELECT transaction_id, transaction_category, transaction_subcategory, transaction_amount * rate AS transaction_amount, :preferredCurrency AS transaction_currency, isSpending\n" +
+//            "            FROM transaction_table AS t \n" +
+//            "            LEFT JOIN CurrencyToCurrencyView AS c ON transaction_currency = c.currency_name AND c.`currency_name:1` =:preferredCurrency)\n" +
+//            "WHERE transaction_category = :category\n" +
+//            "GROUP BY transaction_subcategory\n" +
+//            "ORDER BY total DESC")
+//    suspend fun getSubcatAggregateGivenCat(category: String, preferredCurrency: String): List<OptionWithTotal>
+//    // get for each subcategory (of a cat) a sum after having converted the currencies to the preferredCurrency (the amount is the amount SPENT)
+//
+//    @Query("SELECT transaction_category AS option, SUM(CASE WHEN isSpending = 1 THEN transaction_amount ELSE -transaction_amount END) AS total\n" +
+//            "FROM (SELECT transaction_id, transaction_category, transaction_amount * rate AS transaction_amount, :preferredCurrency AS transaction_currency, isSpending\n" +
+//            "            FROM transaction_table AS t \n" +
+//            "            LEFT JOIN CurrencyToCurrencyView AS c ON transaction_currency = c.currency_name AND c.`currency_name:1` =:preferredCurrency)\n" +
+//            "GROUP BY transaction_category\n" +
+//            "ORDER BY total DESC")
+//    suspend fun getCatAggregate(preferredCurrency: String): List<OptionWithTotal>
     // get for each category a sum after having converted the currencies to the preferredCurrency (the amount is the amount SPENT)
 
 
@@ -116,6 +112,4 @@ interface TransactionDao {
     suspend fun getAllFilteredWithPrefCurrency(filters: Filters): List<TransactionWithConversion>? {
         return getAllFilteredWithPrefCurrency(DaoUtils.getQueryFromQueryPair(DaoUtils.getFilteredWithPrefCurrencyQueryPair(filters)))
     }
-
-    private fun Boolean.toInt() = if (this) 1 else 0
 }

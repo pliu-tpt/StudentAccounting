@@ -5,11 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.studentaccounting.db.entities.Currency
-import com.example.studentaccounting.db.entities.CurrencyToCurrencyView
 import com.example.studentaccounting.db.entities.Option
 import com.example.studentaccounting.db.entities.Transaction
 
-@Database(entities = [Transaction::class, Currency::class, Option::class], version = 4,  views = [CurrencyToCurrencyView::class], exportSchema = true)
+@Database(entities = [Transaction::class, Currency::class, Option::class], version = 5,  views = [], exportSchema = true)
 abstract class AppDatabase : RoomDatabase(){
 
     abstract fun transactionDao(): TransactionDao

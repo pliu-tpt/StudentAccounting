@@ -19,27 +19,17 @@ import kotlinx.coroutines.launch
 class SelectCategoryFragment : SelectFragment() {
 
     private val viewModel : TransactionViewModel by activityViewModels()
-//    private lateinit var binding: FragmentSelectCategoryBinding
     private lateinit var adapter: OptionRecyclerViewAdapter
-
-/*
-private val binding: FragmentSelectCategoryBinding get() = _binding!!
-private var _binding: FragmentSelectCategoryBinding? = null
-
-private val newAddLayoutBinding: CommonNewAddLayoutBinding get() = _newAddLayoutBinding!!
-private var _newAddLayoutBinding: CommonNewAddLayoutBinding? = null
-*/
 
     private lateinit var binding: FragmentSelectCategoryBinding
     private lateinit var newAddLayoutBinding: CommonNewAddLayoutBinding
 
-    private var fragmentString: String
+    private lateinit var fragmentString: String
 
     private var originalMode : Int? = null
 
     init {
         nextPageResId = R.id.action_selectCategoryFragment_to_selectSubcategoryFragment
-        fragmentString = resources.getString(R.string.new_category)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,11 +45,13 @@ private var _newAddLayoutBinding: CommonNewAddLayoutBinding? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentSelectCategoryBinding.inflate(inflater, container, false)
         newAddLayoutBinding = CommonNewAddLayoutBinding.bind(binding.root)
 
         initRecyclerView()
+
+        fragmentString = requireContext().getString(R.string.new_category)
 
         initNewAdd(fragmentString)
 
@@ -81,6 +73,18 @@ private var _newAddLayoutBinding: CommonNewAddLayoutBinding? = null
 
         return binding.root
     }
+
+//    override fun onActivityCreated(savedInstanceState: Bundle?) {
+//        super.onActivityCreated(savedInstanceState)
+//
+//    }
+
+//    override fun onDestroyView() {
+//        super.onDestroyView()
+//        _binding = null
+//        _newAddLayoutBinding = null
+//    }
+
 
 //    override fun onDestroyView() {
 //        super.onDestroyView()

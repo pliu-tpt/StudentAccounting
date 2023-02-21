@@ -219,6 +219,20 @@ class TransactionListFragment : Fragment() {
     }
 
     private fun displayTransactionTypesList(){
+        viewModel.preferredCurrency.observe(viewLifecycleOwner) {
+            CoroutineScope(Dispatchers.Main).launch {
+                viewModel.getAllFilteredWithPrefCurrency(Filters(prefCurrency = viewModel.preferredCurrency))?.let { it1 -> adapter.setList(it1) }
+                adapter.notifyDataSetChanged()
+            }
+        }
+
+//        viewModel.currencies.observe(viewLifecycleOwner) {
+//            CoroutineScope(Dispatchers.Main).launch {
+//                viewModel.getAllFilteredWithPrefCurrency(Filters(prefCurrency = viewModel.preferredCurrency))?.let { it1 -> adapter.setList(it1) }
+//                adapter.notifyDataSetChanged()
+//            }
+//        }
+
         viewModel.transactions.observe(viewLifecycleOwner) {
             CoroutineScope(Dispatchers.Main).launch {
                 viewModel.getAllFilteredWithPrefCurrency(Filters(prefCurrency = viewModel.preferredCurrency))?.let { it1 -> adapter.setList(it1) }

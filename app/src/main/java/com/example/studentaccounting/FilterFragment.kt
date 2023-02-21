@@ -42,8 +42,9 @@ class FilterFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentFilterBinding.inflate(inflater, container, false)
+        filterLayoutBinding = CommonFilterLayoutBinding.bind(binding.root)
 
         updateFilteredTransactions()
         setupAutoCompleteTextView()
@@ -134,7 +135,7 @@ class FilterFragment : Fragment() {
     }
 
     private fun resetMonth() {
-        filterLayoutBinding.tvMonth.text = "Select Month"
+        filterLayoutBinding.tvMonth.text = getString(R.string.select_month)
         filterLayoutBinding.cbMonth.isChecked = true
     }
 
@@ -259,7 +260,7 @@ class FilterFragment : Fragment() {
         autoCompleteTextView.setAdapter(adapterCategory)
         autoCompleteTextView.onItemClickListener =
             AdapterView.OnItemClickListener { parent, _, _, id ->
-                var item = parent?.getItemAtPosition(id.toInt()).toString()
+                val item = parent?.getItemAtPosition(id.toInt()).toString()
                 filterViewModel.updateCat(item)
                 filterLayoutBinding.cbCat.isChecked = false
             }

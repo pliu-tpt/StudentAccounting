@@ -14,24 +14,15 @@ import com.example.studentaccounting.databinding.FragmentSelectTransactionTypeTo
 class SelectTransactionTypeToFragment : SelectFragment() {
     private val viewModel : TransactionViewModel by activityViewModels()
 
-/*
-private val binding: FragmentSelectTransactionTypeToBinding get() = _binding!!
-private var _binding: FragmentSelectTransactionTypeToBinding? = null
-
-private val newAddLayoutBinding: CommonNewAddLayoutBinding get() = _newAddLayoutBinding!!
-private var _newAddLayoutBinding: CommonNewAddLayoutBinding? = null
-*/
-
     private lateinit var binding: FragmentSelectTransactionTypeToBinding
     private lateinit var newAddLayoutBinding: CommonNewAddLayoutBinding
 
     private lateinit var adapter: OptionRecyclerViewAdapter
 
-    private var fragmentString: String
+    private lateinit var fragmentString: String
 
     init {
         nextPageResId = R.id.action_selectTransactionTypeToFragment_to_selectAmountFragment
-        fragmentString = resources.getString(R.string.new_type)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,12 +32,14 @@ private var _newAddLayoutBinding: CommonNewAddLayoutBinding? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = FragmentSelectTransactionTypeToBinding.inflate(inflater, container, false)
         newAddLayoutBinding = CommonNewAddLayoutBinding.bind(binding.root)
 
         initRecyclerView()
+
+        fragmentString = requireContext().getString(R.string.new_type)
 
         initNewAdd(fragmentString)
 

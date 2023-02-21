@@ -18,25 +18,15 @@ class SelectSubcategoryFragment : SelectFragment() {
 
     private val viewModel : TransactionViewModel by activityViewModels()
 
-
-/*
-private val binding: FragmentSelectSubcategoryBinding get() = _binding!!
-private var _binding: FragmentSelectSubcategoryBinding? = null
-
-private val newAddLayoutBinding: CommonNewAddLayoutBinding get() = _newAddLayoutBinding!!
-private var _newAddLayoutBinding: CommonNewAddLayoutBinding? = null
-*/
-
     private lateinit var binding: FragmentSelectSubcategoryBinding
     private lateinit var newAddLayoutBinding: CommonNewAddLayoutBinding
 
     private lateinit var adapter: OptionRecyclerViewAdapter
 
-    private var fragmentString: String
+    private lateinit var fragmentString: String
 
     init {
         nextPageResId = R.id.action_selectSubcategoryFragment_to_selectTransactionTypeFragment
-        fragmentString = resources.getString(R.string.new_sub_category)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,12 +42,14 @@ private var _newAddLayoutBinding: CommonNewAddLayoutBinding? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = FragmentSelectSubcategoryBinding.inflate(inflater, container, false)
         newAddLayoutBinding = CommonNewAddLayoutBinding.bind(binding.root)
 
         initRecyclerView()
+
+        fragmentString = requireContext().getString(R.string.new_sub_category)
 
         initNewAdd(fragmentString)
 
