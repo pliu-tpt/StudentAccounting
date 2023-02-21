@@ -46,4 +46,5 @@
     <string name="all_categories">All Categories</string>
     <string name="new_type">New Type</string>
     <string name="category">Category</string>
+    <string name="select_month">Select Month</string>
 </resources>
