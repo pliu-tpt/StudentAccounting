@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentaccounting.databinding.TransactionItemBinding
-import com.example.studentaccounting.db.entities.Transaction
 import com.example.studentaccounting.db.entities.relations.TransactionWithConversion
 
 class TransactionRecyclerViewAdapter(
@@ -43,13 +42,14 @@ class TransactionViewHolder(private val binding: TransactionItemBinding): Recycl
             tvAmountCard.text = String.format("%.2f",t.preferred_currency_amount)
             tvCurrencyCard.text = t.preferred_currency
 
-            var plusMinus = if (transaction.isSpending) "- " else "+ "
-            tvAmountCardReal.text = plusMinus + transaction.amount.toString()
+            val plusMinus = if (transaction.isSpending) "- " else "+ "
+            tvAmountCardReal.text = "$plusMinus${transaction.amount}"
 
             tvCatCard.text = transaction.category
             tvSubcatCard.text = transaction.subcategory
             tvNameCard.text = transaction.name
             tvCurrencyCardReal.text = transaction.currency
+            tvType.text = transaction.type
 
             tvAmountCard.setTextColor(
                 ContextCompat.getColor(
