@@ -2,13 +2,13 @@ package com.example.studentaccounting
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.FOCUSABLE
 import android.view.View.NOT_FOCUSABLE
 import android.view.ViewGroup
 import android.widget.*
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.studentaccounting.TransactionListFragment.Companion.MYTAG
@@ -53,7 +53,7 @@ class FilterFragment : Fragment() {
 
 
         filterViewModel.filters.month.observe(viewLifecycleOwner) {
-            Log.i(MYTAG,"Observer Month Modification to : ${it.toString()}")
+            Log.i(MYTAG,"Filter Observer Month Modification to : ${it.toString()}")
             if (it == "-1") {
                 resetMonth()
             }
@@ -61,7 +61,7 @@ class FilterFragment : Fragment() {
         }
 
         filterViewModel.filters.year.observe(viewLifecycleOwner) {
-            Log.i(MYTAG,"Observer Year Modification to : ${it.toString()}")
+            Log.i(MYTAG,"Filter Observer Year Modification to : ${it.toString()}")
             if (it == "-1") {
                 resetMonth()
             }
@@ -69,7 +69,7 @@ class FilterFragment : Fragment() {
         }
 
         filterViewModel.filters.cat.observe(viewLifecycleOwner) {
-            Log.i(MYTAG,"Observer Cat Modification to : ${it.toString()}")
+            Log.i(MYTAG,"Filter Observer Cat Modification to : ${it.toString()}")
             if (it == "-1") {
                 resetCat()
             } else {
@@ -126,8 +126,6 @@ class FilterFragment : Fragment() {
 
     private fun updateFilteredTransactions() {
         CoroutineScope(Dispatchers.Main).launch {
-//            Log.i(MYTAG, "CALL TO MODIF ${viewModel.getAllFiltered(filterViewModel.filters).toString()}")
-//            Log.i(MYTAG, "CALL TO AGG ${viewModel.getAllFilteredAggregated(filterViewModel.filters).toString()}")
             viewModel.getAllFilteredWithPrefCurrency(filterViewModel.filters)?.let {
                 filterViewModel.updateFilteredTransactions(it)
             } ?: filterViewModel.updateFilteredTransactions(mutableListOf<TransactionWithConversion>())
@@ -189,7 +187,6 @@ class FilterFragment : Fragment() {
                     ?.let { it1 ->
                         filterViewModel.updateOptionWithTotal(it1)
                         aggAdapter.setList(it1)
-                        Log.i(MYTAG, "TEST ID ${binding.rvFilteredAggregate.layoutManager?.findViewByPosition(it1.size + 1)?.id.toString()}")
                         aggAdapter.addTotal()
                         aggAdapter.notifyDataSetChanged()
                     }

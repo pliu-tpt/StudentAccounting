@@ -3,16 +3,13 @@ package com.example.studentaccounting
 import android.annotation.SuppressLint
 import android.graphics.Typeface
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentaccounting.TransactionListFragment.Companion.MYTAG
 import com.example.studentaccounting.databinding.OptionTotalItemBinding
-import com.example.studentaccounting.databinding.SelectItemBinding
 import com.example.studentaccounting.db.entities.relations.OptionWithTotal
-import java.security.cert.PKIXRevocationChecker.Option
 import kotlin.math.abs
 
 class AggregateRecyclerViewAdapter(
@@ -75,8 +72,16 @@ class OptionAggregateViewHolder(private val binding: OptionTotalItemBinding): Re
                 }
             }
 
+            if (position == 0) {
+                tvOption.text = "       ${option.option}"
+            }
+
+            tvTotal.text = "${String.format("%.2f",abs(option.total))} $aggCurrency"
+
             if (option.option == "TOTAL SPENDING"){
                 tvOption.text = "       ${option.option}"
+                tvTotal.text = "${String.format("%.2f",option.total)} $aggCurrency"
+
                 tvOption.textSize = 18F
                 tvTotal.textSize = 18F
                 tvOption.setTypeface(null, Typeface.BOLD)
@@ -87,11 +92,7 @@ class OptionAggregateViewHolder(private val binding: OptionTotalItemBinding): Re
                 }
             }
 
-            if (position == 0) {
-                tvOption.text = "       ${option.option}"
-            }
 
-            tvTotal.text = "${String.format("%.2f",abs(option.total))} $aggCurrency"
 
             this.root.setOnClickListener{
                 // eg change the option to the selected category

@@ -2,12 +2,12 @@ package com.example.studentaccounting
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
 import android.widget.*
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.studentaccounting.TransactionListFragment.Companion.MYTAG
 import com.example.studentaccounting.databinding.CommonFilterLayoutBinding
@@ -113,6 +113,13 @@ class BudgetFragment : Fragment() {
             }
         }
 
+        viewModel.transactions.observe(viewLifecycleOwner){
+            CoroutineScope(Dispatchers.Main).launch {
+                viewModel.getAllFilteredWithPrefCurrency(filterViewModel.filters)
+                    ?.let { it1 -> filterViewModel.updateFilteredTransactions(it1) }
+            }
+        }
+
         loadCurrentData()
 
         return binding.root
@@ -172,6 +179,7 @@ class BudgetFragment : Fragment() {
         var earnedData : List<Any> = listOf()
 
         filterViewModel.optionWithTotal.value?.let {
+            Log.i(MYTAG, "STARTUP OPTION WITH TOTAL : ${it.toString()}")
             spentData = it.filter{it1 -> it1.total > 0 }.map{ it2 -> arrayOf(it2.option, (it2.total * 100.0).roundToInt() / 100.00 ) }
 
             spentSeries = arrayOf(
@@ -298,8 +306,6 @@ class BudgetFragment : Fragment() {
                 chartViewE.visibility = VISIBLE
             }
         }
-//        chartViewS.requestLayout()
-//        chartViewE.requestLayout()
     }
 
     private fun resetMonth() {

@@ -11,8 +11,6 @@ public final class DaoUtils {
 
     companion object {
 
-
-
         fun getQueryFromQueryPair(pair: Pair<String, MutableList<Any>?>): SupportSQLiteQuery {
             Log.i(MYTAG, "${pair.first}, ${pair.second.toString()}")
             return if (pair.second.isNullOrEmpty()) {
@@ -31,7 +29,7 @@ public final class DaoUtils {
                 cat.value?.let { if (it != "-1") filterConditions.add("transaction_category = ?" to it) }
                 // "subqueries" to filter  specific field
             }
-            return if (filterConditions.isEmpty()) {
+            if (filterConditions.isEmpty()) {
                 return "SELECT * FROM transaction_table" to null // if no filters are used
             } else {
                 var conditionsMerged =
@@ -44,16 +42,16 @@ public final class DaoUtils {
 
                 val bindArgs = filterConditions.mapNotNull { it.second }.toMutableList()
 
-                if (bindArgs.isEmpty()) {
-                    return "SELECT * FROM transaction_table WHERE $conditionsMerged" to null
+                return if (bindArgs.isEmpty()) {
+                    "SELECT * FROM transaction_table WHERE $conditionsMerged" to null
                 } else {
-                    return "SELECT * FROM transaction_table WHERE $conditionsMerged" to bindArgs // .toTypedArray()
+                    "SELECT * FROM transaction_table WHERE $conditionsMerged" to bindArgs // .toTypedArray()
                 }
             }
         }
 
         fun getFilteredWithPrefCurrencyQueryPair(filters: Filters): Pair<String, MutableList<Any>?>{
-            var filteredQuery = getFilterConditionsQueryPair(filters)
+            val filteredQuery = getFilterConditionsQueryPair(filters)
 
             var query : String = "" // to construct the SQL Query
             var bindArgs = mutableListOf<Any>() // to give the necessary arguments
@@ -77,7 +75,7 @@ public final class DaoUtils {
         }
 
         fun getAggregateConditionsQueryPair(filters: Filters): Pair<String, MutableList<Any>?> {
-            var filteredQuery = getFilterConditionsQueryPair(filters)
+            val filteredQuery = getFilterConditionsQueryPair(filters)
 
             var query : String = "" // to construct the SQL Query
             var bindArgs = mutableListOf<Any>() // to give the necessary arguments
@@ -125,6 +123,75 @@ public final class DaoUtils {
                 bindArgs.add(filters.cat.value!!.toString())
             }
 
+            return query to bindArgs
+        }
+
+        fun getLineGraphConditionsQueryPair(filters: Filters): Pair<String, MutableList<Any>?> {
+
+            var query : String = "" // to construct the SQL Query
+            var bindArgs = mutableListOf<Any>() // to give the necessary arguments
+
+            if (filters.cat.value == "-1" || filters.cat.value.isNullOrBlank()) {
+                if (filters.prefCurrency.value.isNullOrEmpty()) {
+                    Log.i(MYTAG, "Couldn't Aggregate given filter")
+                    return query to bindArgs //
+                } else {
+                    query +="SELECT transaction_category AS option, STRFTIME('%Y-%m', transaction_date) as month, SUM(CASE WHEN isSpending = 1 THEN preferred_currency_amount ELSE -preferred_currency_amount END) AS total \n" +
+                            "FROM (SELECT t.* ,transaction_amount * rate AS preferred_currency_amount, ? AS preferred_currency \n" +
+                            "FROM transaction_table"
+                    bindArgs.add(filters.prefCurrency.value!!)
+
+                    query +=" AS t LEFT JOIN (SELECT currency_name, destination / departure AS rate FROM\n" +
+                            "       (SELECT currency_name, USD_to_it AS departure, (SELECT USD_to_it FROM currency_table WHERE currency_name = ?) AS destination FROM currency_table)) AS c \n" +
+                            "       ON t.transaction_currency = c.currency_name)\n" +
+                            "GROUP BY transaction_category, month\n" +
+                            "HAVING "
+                    bindArgs.add(filters.prefCurrency.value!!)
+
+                    if (filters.startMonth.value == "-1"){
+                        query += "month >= MIN(month) "
+                    } else {
+                        query += "month >= ? "
+                        bindArgs.add(filters.startMonth.value!!)
+                    }
+                    if (filters.endMonth.value == "-1"){
+                        query += "AND month <= MAX(month)"
+                    } else {
+                        query += "AND month <= ? "
+                        bindArgs.add(filters.endMonth.value!!)
+                    }
+                    query +=" ORDER BY month ASC;"
+                }
+            } else {
+                query +="SELECT transaction_category AS option, STRFTIME('%Y-%m', transaction_date) as month, SUM(CASE WHEN isSpending = 1 THEN preferred_currency_amount ELSE -preferred_currency_amount END) AS total \n" +
+                        "FROM (SELECT t.* ,transaction_amount * rate AS preferred_currency_amount, ? AS preferred_currency \n" +
+                        "FROM transaction_table"
+                bindArgs.add(filters.prefCurrency.value!!)
+
+                query +=" AS t LEFT JOIN (SELECT currency_name, destination / departure AS rate FROM\n" +
+                        "       (SELECT currency_name, USD_to_it AS departure, (SELECT USD_to_it FROM currency_table WHERE currency_name = ?) AS destination FROM currency_table)) AS c \n" +
+                        "       ON t.transaction_currency = c.currency_name)\n" +
+                        "GROUP BY transaction_category, month \n" +
+                        "HAVING "
+                bindArgs.add(filters.prefCurrency.value!!)
+
+                query += "option = ? "
+                bindArgs.add(filters.cat.value!!)
+
+                if (filters.startMonth.value == "-1"){
+                    query += "AND month >= MIN(month) "
+                } else {
+                    query += "AND month >= ? "
+                    bindArgs.add(filters.startMonth.value!!)
+                }
+                if (filters.endMonth.value == "-1"){
+                    query += "AND month <= MAX(month)"
+                } else {
+                    query += "AND month <= ? "
+                    bindArgs.add(filters.endMonth.value!!)
+                }
+                query +=" ORDER BY month ASC;"
+            }
             return query to bindArgs
         }
     }

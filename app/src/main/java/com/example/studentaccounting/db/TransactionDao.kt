@@ -5,6 +5,7 @@ import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.example.studentaccounting.db.entities.Currency
 import com.example.studentaccounting.db.entities.Transaction
+import com.example.studentaccounting.db.entities.relations.OptionWithDateAndTotal
 import com.example.studentaccounting.db.entities.relations.OptionWithTotal
 import com.example.studentaccounting.db.entities.relations.TransactionWithConversion
 
@@ -97,6 +98,13 @@ interface TransactionDao {
 
     suspend fun getAllFilteredAggregated(filters: Filters): List<OptionWithTotal>? {
         return getAllFilteredAggregated(DaoUtils.getQueryFromQueryPair(DaoUtils.getAggregateConditionsQueryPair(filters)))
+    }
+
+    @RawQuery(observedEntities = [Transaction::class, Currency::class])
+    suspend fun getAllFilteredLineGraph(query: SupportSQLiteQuery): List<OptionWithDateAndTotal>?
+
+    suspend fun getAllFilteredLineGraph(filters: Filters): List<OptionWithDateAndTotal>? {
+        return getAllFilteredLineGraph(DaoUtils.getQueryFromQueryPair(DaoUtils.getLineGraphConditionsQueryPair(filters)))
     }
 
     @RawQuery(observedEntities = [Transaction::class])

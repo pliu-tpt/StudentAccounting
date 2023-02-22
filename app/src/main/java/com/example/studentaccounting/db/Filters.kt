@@ -10,4 +10,6 @@ data class Filters(
     var isSorted: MutableLiveData<Boolean?> = MutableLiveData<Boolean?>(),
     var prefCurrency: MutableLiveData<String> = MutableLiveData<String>(),
     // all the other filters
+    var startMonth: MutableLiveData<String?> = MutableLiveData<String?>(),
+    var endMonth: MutableLiveData<String?> = MutableLiveData<String?>(),
 )

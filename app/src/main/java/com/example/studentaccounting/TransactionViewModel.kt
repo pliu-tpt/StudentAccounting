@@ -8,9 +8,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.studentaccounting.TransactionListFragment.Companion.MYTAG
 import com.example.studentaccounting.db.CurrencyDao
 import com.example.studentaccounting.db.Filters
-import com.example.studentaccounting.db.entities.Transaction
 import com.example.studentaccounting.db.TransactionDao
 import com.example.studentaccounting.db.entities.Currency
+import com.example.studentaccounting.db.entities.Transaction
+import com.example.studentaccounting.db.entities.relations.OptionWithDateAndTotal
 import com.example.studentaccounting.db.entities.relations.OptionWithTotal
 import com.example.studentaccounting.db.entities.relations.TransactionWithConversion
 import kotlinx.coroutines.launch
@@ -179,6 +180,10 @@ class TransactionViewModel(private val dao:TransactionDao, private val currencyD
 
     suspend fun getAllFilteredAggregated(filters:Filters): List<OptionWithTotal>? {
         return dao.getAllFilteredAggregated(filters)
+    }
+
+    suspend fun getAllFilteredLineGraph(filters:Filters): List<OptionWithDateAndTotal>? {
+        return dao.getAllFilteredLineGraph(filters)
     }
 
     suspend fun getAllFilteredWithPrefCurrency(filters:Filters): List<TransactionWithConversion>?{

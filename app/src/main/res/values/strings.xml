@@ -47,4 +47,6 @@
     <string name="new_type">New Type</string>
     <string name="category">Category</string>
     <string name="select_month">Select Month</string>
+    <string name="start_month">Start Month</string>
+    <string name="end_month">End Month</string>
 </resources>

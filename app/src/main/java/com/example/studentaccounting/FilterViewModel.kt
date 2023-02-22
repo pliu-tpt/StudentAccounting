@@ -3,6 +3,7 @@ package com.example.studentaccounting
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.studentaccounting.db.Filters
+import com.example.studentaccounting.db.entities.relations.OptionWithDateAndTotal
 import com.example.studentaccounting.db.entities.relations.OptionWithTotal
 import com.example.studentaccounting.db.entities.relations.TransactionWithConversion
 import java.util.*
@@ -10,6 +11,8 @@ import java.util.*
 class FilterViewModel: ViewModel() {
     var filteredTransactions = MutableLiveData<List<TransactionWithConversion>>() // each transaction, converted
     var optionWithTotal = MutableLiveData<List<OptionWithTotal>>() // each aggregate, converted
+
+    var lineGraphAggregated = MutableLiveData<List<OptionWithDateAndTotal>>()
 
     var filters = Filters()
 
@@ -21,11 +24,22 @@ class FilterViewModel: ViewModel() {
         filters.cat.value = "-1"
         filters.isSorted.value = true
         filters.prefCurrency.value = "SGD"
+
+        filters.startMonth.value = "-1"
+        filters.endMonth.value = "-1"
     }
 
     fun updateMonthAndYear(month:Int?, year:Int?){
         filters.month.value = String.format("%02d", month)
         filters.year.value = String.format("%02d", year)
+    }
+
+    fun updateStartMonthAndYear(monthAndYear:String){
+        filters.startMonth.value = monthAndYear
+    }
+
+    fun updateEndMonthAndYear(monthAndYear:String){
+        filters.endMonth.value = monthAndYear
     }
 
     fun updateCat(cat:String?) {
@@ -34,6 +48,10 @@ class FilterViewModel: ViewModel() {
 
     fun updateOptionWithTotal(optionWithTotals: List<OptionWithTotal>){
         optionWithTotal.value = optionWithTotals
+    }
+
+    fun updateLineGraph(optionWithDateAndTotal: List<OptionWithDateAndTotal>){
+        lineGraphAggregated.value = optionWithDateAndTotal
     }
 
     fun updateFilteredTransactions(transactions:List<TransactionWithConversion>){
