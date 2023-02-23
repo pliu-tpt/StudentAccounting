@@ -24,8 +24,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: TransactionViewModel
 
     private lateinit var filterViewModel: FilterViewModel
-    private lateinit var countsViewModel: CountsViewModel
+    private lateinit var budgetViewModel: BudgetViewModel
     private lateinit var timeSeriesViewModel: TimeSeriesViewModel
+    private lateinit var countsViewModel: CountsViewModel
 
     private lateinit var viewPager: ViewPager2
     private lateinit var pagerViewAdapter: PagerViewAdapter
@@ -79,6 +80,7 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this,factory)[TransactionViewModel::class.java]
 
         filterViewModel = ViewModelProvider(this)[FilterViewModel::class.java]
+        budgetViewModel = ViewModelProvider(this)[BudgetViewModel::class.java]
         timeSeriesViewModel = ViewModelProvider(this)[TimeSeriesViewModel::class.java]
 
         countsViewModel = ViewModelProvider(this)[CountsViewModel::class.java]
@@ -88,6 +90,8 @@ class MainActivity : AppCompatActivity() {
 
         pagerViewAdapter = PagerViewAdapter(this)
         viewPager.adapter = pagerViewAdapter
+
+//        viewPager.offscreenPageLimit = 5
 
         // Pager notifying the BNView of a change
         viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {

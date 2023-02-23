@@ -12,7 +12,6 @@ import androidx.fragment.app.activityViewModels
 import com.example.studentaccounting.TransactionListFragment.Companion.MYTAG
 import com.example.studentaccounting.databinding.CommonFilterLayoutBinding
 import com.example.studentaccounting.databinding.FragmentBudgetBinding
-import com.example.studentaccounting.db.entities.relations.OptionWithTotal
 import com.example.studentaccounting.db.entities.relations.TransactionWithConversion
 import com.github.aachartmodel.aainfographics.aachartcreator.AAChartModel
 import com.github.aachartmodel.aainfographics.aachartcreator.AAChartType
@@ -27,7 +26,7 @@ import kotlin.math.roundToInt
 class BudgetFragment : Fragment() {
 
     private val viewModel : TransactionViewModel by activityViewModels()
-    private val filterViewModel : FilterViewModel by activityViewModels()
+    private val budgetViewModel : BudgetViewModel by activityViewModels()
 
     private lateinit var binding: FragmentBudgetBinding
     private lateinit var filterLayoutBinding: CommonFilterLayoutBinding
@@ -53,27 +52,25 @@ class BudgetFragment : Fragment() {
         updateFilteredTransactions()
         setupAutoCompleteTextView()
         setupPieChart()
-//        initAggregateRecyclerView()
 
-
-        filterViewModel.filters.month.observe(viewLifecycleOwner) {
-            Log.i(TransactionListFragment.MYTAG,"Observer Month Modification to : ${it.toString()}")
+        budgetViewModel.filters.month.observe(viewLifecycleOwner) {
+            Log.i(MYTAG,"Observer Month Modification to : ${it.toString()}")
             if (it == "-1") {
                 resetMonth()
             }
             updateFilteredTransactions()
         }
 
-        filterViewModel.filters.year.observe(viewLifecycleOwner) {
-            Log.i(TransactionListFragment.MYTAG,"Observer Year Modification to : ${it.toString()}")
+        budgetViewModel.filters.year.observe(viewLifecycleOwner) {
+            Log.i(MYTAG,"Observer Year Modification to : ${it.toString()}")
             if (it == "-1") {
                 resetMonth()
             }
             updateFilteredTransactions()
         }
 
-        filterViewModel.filters.cat.observe(viewLifecycleOwner) {
-            Log.i(TransactionListFragment.MYTAG,"Observer Cat Modification to : ${it.toString()}")
+        budgetViewModel.filters.cat.observe(viewLifecycleOwner) {
+            Log.i(MYTAG,"Observer Cat Modification to : ${it.toString()}")
             if (it == "-1") {
                 resetCat()
             } else {
@@ -89,7 +86,7 @@ class BudgetFragment : Fragment() {
         filterLayoutBinding.cbCat.setOnCheckedChangeListener { _, isChecked ->
             when (isChecked) {
                 true -> {
-                    filterViewModel.updateCat("-1")
+                    budgetViewModel.updateCat("-1")
                 }
                 false -> {enableEditText(filterLayoutBinding.actvCategory)}
             }
@@ -98,51 +95,51 @@ class BudgetFragment : Fragment() {
         filterLayoutBinding.cbMonth.setOnCheckedChangeListener { _, isChecked ->
             when (isChecked) {
                 true -> {
-                    filterViewModel.updateMonthAndYear(-1, -1)
+                    budgetViewModel.updateMonthAndYear(-1, -1)
                 }
                 false -> {}
             }
         }
 
-        filterViewModel.filteredTransactions.observe(viewLifecycleOwner){
+//        viewModel.transactions.observe(viewLifecycleOwner){
+//            CoroutineScope(Dispatchers.Main).launch {
+//                viewModel.getAllFilteredWithPrefCurrency(budgetViewModel.filters)
+//                    ?.let { it1 -> budgetViewModel.updateFilteredTransactions(it1) }
+//            }
+//        }
+//
+        budgetViewModel.filteredTransactions.observe(viewLifecycleOwner){
             CoroutineScope(Dispatchers.Main).launch {
-                viewModel.getAllFilteredAggregated(filterViewModel.filters)
+                viewModel.getAllFilteredAggregated(budgetViewModel.filters)
                     ?.let { it1 ->
-                        filterViewModel.updateOptionWithTotal(it1)
+                        budgetViewModel.updateOptionWithTotal(it1)
                     }
             }
         }
 
-        viewModel.transactions.observe(viewLifecycleOwner){
-            CoroutineScope(Dispatchers.Main).launch {
-                viewModel.getAllFilteredWithPrefCurrency(filterViewModel.filters)
-                    ?.let { it1 -> filterViewModel.updateFilteredTransactions(it1) }
-            }
-        }
-
-        loadCurrentData()
+//        loadCurrentData()
 
         return binding.root
     }
 
     private fun loadCurrentData() {
-        filterViewModel.filters.month.value = filterViewModel.filters.month.value
-        filterViewModel.filters.year.value = filterViewModel.filters.year.value
-        filterViewModel.filters.cat.value = filterViewModel.filters.cat.value
-        filterViewModel.filteredTransactions.value = filterViewModel.filteredTransactions.value
+        budgetViewModel.filters.month.value = budgetViewModel.filters.month.value
+        budgetViewModel.filters.year.value = budgetViewModel.filters.year.value
+        budgetViewModel.filters.cat.value = budgetViewModel.filters.cat.value
+//        filterViewModel.filteredTransactions.value = filterViewModel.filteredTransactions.value
     }
 
     private fun popupMonthDialog() {
         if (!filterLayoutBinding.cbMonth.isChecked) {
-            MonthYearPickerDialog(filterViewModel.date).apply {
+            MonthYearPickerDialog(budgetViewModel.date).apply {
                 setListener { _, year, month, dayOfMonth ->
                     Toast.makeText(
                         requireContext(),
                         "Set date: $year/$month/$dayOfMonth",
                         Toast.LENGTH_LONG
                     ).show()
-                    filterViewModel.updateMonthAndYear(month + 1, year)
-                    filterViewModel.updateDate(Date(year + 1, month, dayOfMonth))
+                    budgetViewModel.updateMonthAndYear(month + 1, year)
+                    budgetViewModel.updateDate(Date(year + 1, month, dayOfMonth))
                     filterLayoutBinding.tvMonth.text = "${String.format("%02d", month + 1)}-$year"
                     filterLayoutBinding.cbMonth.isChecked = false
                 }
@@ -153,9 +150,9 @@ class BudgetFragment : Fragment() {
 
     private fun updateFilteredTransactions() {
         CoroutineScope(Dispatchers.Main).launch {
-            viewModel.getAllFilteredWithPrefCurrency(filterViewModel.filters)?.let {
-                filterViewModel.updateFilteredTransactions(it)
-            } ?: filterViewModel.updateFilteredTransactions(mutableListOf<TransactionWithConversion>())
+            viewModel.getAllFilteredWithPrefCurrency(budgetViewModel.filters)?.let {
+                budgetViewModel.updateFilteredTransactions(it)
+            } ?: budgetViewModel.updateFilteredTransactions(mutableListOf<TransactionWithConversion>())
         }
 
     }
@@ -178,7 +175,7 @@ class BudgetFragment : Fragment() {
 
         var earnedData : List<Any> = listOf()
 
-        filterViewModel.optionWithTotal.value?.let {
+        budgetViewModel.optionWithTotal.value?.let {
             Log.i(MYTAG, "STARTUP OPTION WITH TOTAL : ${it.toString()}")
             spentData = it.filter{it1 -> it1.total > 0 }.map{ it2 -> arrayOf(it2.option, (it2.total * 100.0).roundToInt() / 100.00 ) }
 
@@ -190,7 +187,7 @@ class BudgetFragment : Fragment() {
             )
         }
 
-        filterViewModel.optionWithTotal.value?.let {
+        budgetViewModel.optionWithTotal.value?.let {
             earnedData = it.filter {it1 -> it1.total < 0 }.map { it2 -> arrayOf(it2.option, ( - it2.total * 100.0).roundToInt() / 100.00 ) }
             earnedSeries = arrayOf(
                 AASeriesElement()
@@ -217,7 +214,7 @@ class BudgetFragment : Fragment() {
             .animationDuration(2000)
             .series(earnedSeries)
 
-        updateChartsSize(chartViewSpent, spentData, chartViewEarned, earnedData)
+//        updateChartsSize(chartViewSpent, spentData, chartViewEarned, earnedData)
 
         chartViewSpent.aa_drawChartWithChartModel(aaChartModelSpent)
         chartViewEarned.aa_drawChartWithChartModel(aaChartModelEarned)
@@ -226,7 +223,7 @@ class BudgetFragment : Fragment() {
     }
 
     private fun displayPieChart(){
-        filterViewModel.optionWithTotal.observe(viewLifecycleOwner){
+        budgetViewModel.optionWithTotal.observe(viewLifecycleOwner){
 
             var spentSeries : Array<Any> = arrayOf(AASeriesElement()
                 .innerSize("85%")
@@ -269,18 +266,25 @@ class BudgetFragment : Fragment() {
             }
 
             val aaChartModelSpent : AAChartModel = AAChartModel()
+                .title("Your Spendings")
                 .chartType(AAChartType.Pie)
+                .colorsTheme(arrayOf("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2",
+                    "#7f7f7f", "#bcbd22", "#17becf"))
                 .backgroundColor("#FFFFFFFF")
                 .animationDuration(2000)
                 .series(spentSeries)
 
             val aaChartModelEarned : AAChartModel = AAChartModel()
+                .title("Your Earnings")
+                .colorsTheme(arrayOf("#0ead69", "#3bceac", "#dde7c7","#2c6e49","#62b6cb",
+                    "#7fb800","#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2",
+                    "#7f7f7f", "#bcbd22", "#17becf"))
                 .chartType(AAChartType.Pie)
                 .backgroundColor("#FFFFFFFF")
                 .animationDuration(2000)
                 .series(earnedSeries)
 
-            updateChartsSize(chartViewSpent, spentData, chartViewEarned, earnedData)
+//            updateChartsSize(chartViewSpent, spentData, chartViewEarned, earnedData)
 
             chartViewSpent.aa_refreshChartWithChartModel(aaChartModelSpent)
             chartViewEarned.aa_refreshChartWithChartModel(aaChartModelEarned)
@@ -309,7 +313,7 @@ class BudgetFragment : Fragment() {
     }
 
     private fun resetMonth() {
-        filterLayoutBinding.tvMonth.text = "Select Month"
+        filterLayoutBinding.tvMonth.text = getString(R.string.select_month)
         filterLayoutBinding.cbMonth.isChecked = true
     }
 
@@ -318,26 +322,6 @@ class BudgetFragment : Fragment() {
         filterLayoutBinding.cbCat.isChecked = true
         disableEditText(filterLayoutBinding.actvCategory)
     }
-
-    private fun optionListItemClicked(option:OptionWithTotal){
-        if (filterViewModel.filters.cat.value == "-1"){
-            filterViewModel.updateCat(option.option)
-            filterLayoutBinding.cbCat.isChecked = false
-        }
-    }
-
-//    private fun displayAggregateOptionList(){
-//        filterViewModel.filteredTransactions.observe(viewLifecycleOwner){
-//            CoroutineScope(Dispatchers.Main).launch {
-//                viewModel.getAllFilteredAggregated(filterViewModel.filters)
-//                    ?.let { it1 ->
-//                        aggAdapter.setList(it1)
-//                        aggAdapter.addTotal()
-//                        aggAdapter.notifyDataSetChanged()
-//                    }
-//            }
-//        }
-//    }
 
     private fun displayCategoriesList(){
         viewModel.categories.observe(viewLifecycleOwner) {
@@ -357,7 +341,7 @@ class BudgetFragment : Fragment() {
         autoCompleteTextView.onItemClickListener =
             AdapterView.OnItemClickListener { parent, _, _, id ->
                 var item = parent?.getItemAtPosition(id.toInt()).toString()
-                filterViewModel.updateCat(item)
+                budgetViewModel.updateCat(item)
                 filterLayoutBinding.cbCat.isChecked = false
             }
 

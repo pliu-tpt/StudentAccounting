@@ -18,26 +18,29 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <include layout="@layout/common_filter_layout"/>
-
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="75"
-            android:orientation="vertical">
-
-            <com.github.aachartmodel.aainfographics.aachartcreator.AAChartView
-                android:id="@+id/aa_chart_view_spent"
+            android:layout_weight="75">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <com.github.aachartmodel.aainfographics.aachartcreator.AAChartView
-                android:id="@+id/aa_chart_view_earned"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+                <com.github.aachartmodel.aainfographics.aachartcreator.AAChartView
+                    android:id="@+id/aa_chart_view_spent"
+                    android:layout_width="match_parent"
+                    android:layout_height="450dp"
+                    android:layout_weight="1" />
 
-        </LinearLayout>
+                <com.github.aachartmodel.aainfographics.aachartcreator.AAChartView
+                    android:id="@+id/aa_chart_view_earned"
+                    android:layout_width="match_parent"
+                    android:layout_height="450dp"
+                    android:layout_weight="1" />
+
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 

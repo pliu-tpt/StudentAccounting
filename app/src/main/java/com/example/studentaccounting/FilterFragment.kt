@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.studentaccounting.TransactionListFragment.Companion.MYTAG
 import com.example.studentaccounting.databinding.CommonFilterLayoutBinding
@@ -48,8 +49,9 @@ class FilterFragment : Fragment() {
 
         updateFilteredTransactions()
         setupAutoCompleteTextView()
-        initFilteredRecyclerView()
-        initAggregateRecyclerView()
+        initAggregateRecyclerViewAndList()
+//        initFilteredRecyclerView()
+//        initAggregateRecyclerView()
 
 
         filterViewModel.filters.month.observe(viewLifecycleOwner) {
@@ -143,35 +145,60 @@ class FilterFragment : Fragment() {
         disableEditText(filterLayoutBinding.actvCategory)
     }
 
-    private fun initFilteredRecyclerView(){
+    private fun initAggregateRecyclerViewAndList(){
+        binding.rvFilteredAggregateAndTransaction.layoutManager = LinearLayoutManager(requireContext())
 
-        binding.rvFilteredTransactions.layoutManager = LinearLayoutManager(requireContext())
         filteredAdapter = TransactionRecyclerViewAdapter{
                 selectedTransaction, view -> transactionListItemLongClicked(selectedTransaction, view)
         }
-
-        binding.rvFilteredTransactions.adapter = filteredAdapter
-
-        displayTransactionTypesList()
-    }
-
-    private fun initAggregateRecyclerView(){
-        // lots of shenanigans to have modular height (horizontal in sflow): https://stackoverflow.com/questions/57890199/how-to-set-recycler-height-to-highest-item-in-recyclerview
-
-        binding.rvFilteredAggregate.layoutManager = LinearLayoutManager(requireContext())
 
         aggAdapter =
             AggregateRecyclerViewAdapter(viewModel.preferredCurrency.value!!) { optionWithTotal ->
                 optionListItemClicked(optionWithTotal)
             }
 
-//        binding.rvFilteredAggregate.visibility = View.INVISIBLE
-        binding.rvFilteredAggregate.adapter = aggAdapter
+        binding.rvFilteredAggregateAndTransaction.adapter = ConcatAdapter(aggAdapter, filteredAdapter)
 
-//        binding.rvFilteredAggregate.setHasFixedSize(true)
-
-        displayAggregateOptionList()
+        displayAggregateRecyclerViewAndList()
+        displayTransactionTypesList()
     }
+
+    private fun displayAggregateRecyclerViewAndList(){
+        displayAggregateOptionList()
+
+    }
+
+//    private fun initFilteredRecyclerView(){
+//
+//        binding.rvFilteredTransactions.layoutManager = LinearLayoutManager(requireContext())
+//        filteredAdapter = TransactionRecyclerViewAdapter{
+//                selectedTransaction, view -> transactionListItemLongClicked(selectedTransaction, view)
+//        }
+//
+//        binding.rvFilteredTransactions.adapter = filteredAdapter
+//
+//        displayTransactionTypesList()
+//    }
+
+
+
+//    private fun initAggregateRecyclerView(){
+//        // lots of shenanigans to have modular height (horizontal in sflow): https://stackoverflow.com/questions/57890199/how-to-set-recycler-height-to-highest-item-in-recyclerview
+//
+//        binding.rvFilteredAggregate.layoutManager = LinearLayoutManager(requireContext())
+//
+//        aggAdapter =
+//            AggregateRecyclerViewAdapter(viewModel.preferredCurrency.value!!) { optionWithTotal ->
+//                optionListItemClicked(optionWithTotal)
+//            }
+//
+////        binding.rvFilteredAggregate.visibility = View.INVISIBLE
+//        binding.rvFilteredAggregate.adapter = aggAdapter
+//
+////        binding.rvFilteredAggregate.setHasFixedSize(true)
+//
+//        displayAggregateOptionList()
+//    }
 
     private fun optionListItemClicked(option:OptionWithTotal){
         if (filterViewModel.filters.cat.value == "-1"){

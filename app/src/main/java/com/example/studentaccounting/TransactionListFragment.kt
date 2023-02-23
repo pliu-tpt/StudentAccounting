@@ -185,7 +185,7 @@ class TransactionListFragment : Fragment() {
             "csv" -> try {
                 val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                     addCategory(Intent.CATEGORY_OPENABLE)
-                    type = "text/comma-separated-values"
+                    type = "text/*"
                 }
                 extension = ext
                 resultImportLauncher.launch(intent)
@@ -356,7 +356,12 @@ class TransactionListFragment : Fragment() {
             val isSpending = row[7]
             val date = row[8]
             Log.i(MYTAG, "$id,$name,$cat,$subCat,$type,$amount,$currency,$isSpending,$date")
-            viewModel.insertTransaction(Transaction(0, name, cat, subCat, type, amount.toDouble(), currency, isSpending.toBoolean(), date))
+
+            if (name.isNullOrBlank() || cat.isNullOrBlank() || subCat.isNullOrBlank()|| type.isNullOrBlank()|| amount.isNullOrBlank()|| currency.isNullOrBlank()|| isSpending.isNullOrBlank()|| date.isNullOrBlank()) {
+                return@forEach
+            } else {
+                viewModel.insertTransaction(Transaction(0, name, cat, subCat, type, amount.toDouble(), currency, isSpending.toBoolean(), date))
+            }
         }
         inputStream.close()
     }

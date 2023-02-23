@@ -23,7 +23,7 @@ import kotlin.math.roundToInt
 class TimeSeriesFragment : Fragment() {
 
     private val viewModel : TransactionViewModel by activityViewModels()
-    private val filterViewModel : FilterViewModel by activityViewModels()
+    private val tsViewModel : TimeSeriesViewModel by activityViewModels()
 
     private lateinit var binding: FragmentTimeSeriesBinding
 
@@ -43,11 +43,12 @@ class TimeSeriesFragment : Fragment() {
     ): View? {
         binding = FragmentTimeSeriesBinding.inflate(inflater, container, false)
 
+        updateGraphTransactions()
         setupAutoCompleteTextView()
 
-        filterViewModel.filters.startMonth.observe(viewLifecycleOwner) {
+        tsViewModel.filters.startMonth.observe(viewLifecycleOwner) {
             if (it == "-1"){
-                 if (filterViewModel.filters.endMonth.value == "-1") {
+                 if (tsViewModel.filters.endMonth.value == "-1") {
                      resetMonths()
                  }
             } else {
@@ -57,9 +58,9 @@ class TimeSeriesFragment : Fragment() {
             updateGraphTransactions()
         }
 
-        filterViewModel.filters.endMonth.observe(viewLifecycleOwner) {
+        tsViewModel.filters.endMonth.observe(viewLifecycleOwner) {
             if (it == "-1"){
-                if (filterViewModel.filters.startMonth.value == "-1") {
+                if (tsViewModel.filters.startMonth.value == "-1") {
                     resetMonths()
                 }
             } else {
@@ -69,7 +70,7 @@ class TimeSeriesFragment : Fragment() {
             updateGraphTransactions()
         }
 
-        filterViewModel.filters.cat.observe(viewLifecycleOwner) {
+        tsViewModel.filters.cat.observe(viewLifecycleOwner) {
             Log.i(TransactionListFragment.MYTAG,"Observer Cat Modification to : ${it.toString()}")
             if (it == "-1") {
                 resetCat()
@@ -90,7 +91,7 @@ class TimeSeriesFragment : Fragment() {
         binding.cbCat.setOnCheckedChangeListener { _, isChecked ->
             when (isChecked) {
                 true -> {
-                    filterViewModel.updateCat("-1")
+                    tsViewModel.updateCat("-1")
                 }
                 false -> {enableEditText(binding.actvCategory)}
             }
@@ -99,44 +100,47 @@ class TimeSeriesFragment : Fragment() {
         binding.cbMonth.setOnCheckedChangeListener { _, isChecked ->
             when (isChecked) {
                 true -> {
-                    filterViewModel.updateStartMonthAndYear("-1")
-                    filterViewModel.updateEndMonthAndYear("-1")
+                    tsViewModel.updateStartMonthAndYear("-1")
+                    tsViewModel.updateEndMonthAndYear("-1")
                 }
                 false -> {}
             }
         }
 
-//        viewModel.transactions.observe(viewLifecycleOwner){
-//            updateGraphTransactions()
-//        }
+        viewModel.transactions.observe(viewLifecycleOwner){
+            updateGraphTransactions()
+        }
 
-        updateGraphTransactions()
+//        tsViewModel.updateCat("-1")
+//        tsViewModel.updateStartMonthAndYear("-1")
+//        tsViewModel.updateEndMonthAndYear("-1")
+
         loadCurrentData()
         setupLineGraph()
-        updateGraphTransactions()
 
         return binding.root
     }
 
     private fun loadCurrentData() {
-        filterViewModel.filters.startMonth.value = filterViewModel.filters.startMonth.value
-        filterViewModel.filters.endMonth.value = filterViewModel.filters.endMonth.value
-        filterViewModel.filters.cat.value = filterViewModel.filters.cat.value
-        filterViewModel.lineGraphAggregated.value = filterViewModel.lineGraphAggregated.value
+        tsViewModel.filters.startMonth.value = tsViewModel.filters.startMonth.value
+        tsViewModel.filters.endMonth.value = tsViewModel.filters.endMonth.value
+        tsViewModel.filters.cat.value = tsViewModel.filters.cat.value
+//        filterViewModel.lineGraphAggregated.value = filterViewModel.lineGraphAggregated.value
     }
 
     private fun buildAACharModelFrom(list: List<OptionWithDateAndTotal>?): AAChartModel {
-        Log.i(MYTAG, "Before generating the chart model, the lineGraphAggregated is ${filterViewModel.lineGraphAggregated.value}")
+        Log.i(MYTAG, "Before generating the chart model, the lineGraphAggregated is ${tsViewModel.lineGraph.value}")
         val defaultValue = AAChartModel()
             .chartType(AAChartType.Line)
             .title("Your Spendings Over Time")
+            .yAxisTitle("Spendings (${viewModel.preferredCurrency.value})")
             .dataLabelsEnabled(true)
             .categories(arrayOf("Nothing"))
             .series(arrayOf(
                 AASeriesElement()
                     .name("Nothing To Display")
                     .data(arrayOf())))
-        if (list ==  null) {
+        if (list.isNullOrEmpty()) {
             Log.i(MYTAG, "BUILD AACHART RETURN BEC NULL")
             return defaultValue
         }
@@ -194,8 +198,13 @@ class TimeSeriesFragment : Fragment() {
             AAChartModel()
                 .chartType(AAChartType.Line)
                 .title("Your Spendings Over Time")
+                .yAxisTitle("Spendings (${viewModel.preferredCurrency.value})")
                 .dataLabelsEnabled(true)
                 .categories(allCategoriesDate.toTypedArray())
+                .colorsTheme(arrayOf(
+                    "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2",
+                    "#7f7f7f", "#bcbd22", "#17becf"
+                ))
                 .series(arrayOf(
                     AASeriesElement()
                         .name("Nothing To Display")
@@ -204,8 +213,11 @@ class TimeSeriesFragment : Fragment() {
             AAChartModel()
                 .chartType(AAChartType.Line)
                 .title("Your Spendings Over Time")
+                .yAxisTitle("Spendings (${viewModel.preferredCurrency.value})")
                 .dataLabelsEnabled(true)
                 .categories(allCategoriesDate.toTypedArray())
+                .colorsTheme(arrayOf("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2",
+                    "#7f7f7f", "#bcbd22", "#17becf"))
                 .series(allSeries.toTypedArray())
         }
     }
@@ -215,7 +227,7 @@ class TimeSeriesFragment : Fragment() {
 
         var chartViewModel : AAChartModel = buildAACharModelFrom(null)
 
-        filterViewModel.lineGraphAggregated.value?.let {
+        tsViewModel.lineGraph.value?.let {
             chartViewModel = buildAACharModelFrom(it)
             Log.i(MYTAG, "BUILD CONSTRUCTED")
         } ?: {
@@ -227,7 +239,7 @@ class TimeSeriesFragment : Fragment() {
     }
 
     private fun displayLineGraph(){
-        filterViewModel.lineGraphAggregated.observe(viewLifecycleOwner){
+        tsViewModel.lineGraph.observe(viewLifecycleOwner){
             Log.i(MYTAG, "Building Chart Model From Answer : $it")
             chartViewLineGraph.aa_refreshChartWithChartModel(buildAACharModelFrom(it))
         }
@@ -240,23 +252,23 @@ class TimeSeriesFragment : Fragment() {
 
     private fun updateGraphTransactions() {
         CoroutineScope(Dispatchers.Main).launch {
-            viewModel.getAllFilteredLineGraph(filterViewModel.filters)?.let {
-                filterViewModel.updateLineGraph(it)
-            } ?: filterViewModel.updateLineGraph(mutableListOf<OptionWithDateAndTotal>())
+            viewModel.getAllFilteredLineGraph(tsViewModel.filters)?.let {
+                tsViewModel.updateLineGraph(it)
+            } ?: tsViewModel.updateLineGraph(mutableListOf<OptionWithDateAndTotal>())
         }
     }
 
     private fun popupStartMonthDialog() {
         if (!binding.cbMonth.isChecked) {
-            MonthYearPickerDialog(filterViewModel.date).apply {
+            MonthYearPickerDialog(tsViewModel.date).apply {
                 setListener { _, year, month, dayOfMonth ->
                     Toast.makeText(
                         requireContext(),
                         "Set date: $year/$month/$dayOfMonth",
                         Toast.LENGTH_LONG
                     ).show()
-                    val monthYearFormatted = "${String.format("%02d", month + 1)}-$year"
-                    filterViewModel.updateStartMonthAndYear(monthYearFormatted)
+                    val monthYearFormatted = "$year-${String.format("%02d", month + 1)}"
+                    tsViewModel.updateStartMonthAndYear(monthYearFormatted)
                 }
                 show(this@TimeSeriesFragment.parentFragmentManager, "MonthYearPickerDialog")
             }
@@ -265,15 +277,15 @@ class TimeSeriesFragment : Fragment() {
 
     private fun popupEndMonthDialog() {
         if (!binding.cbMonth.isChecked) {
-            MonthYearPickerDialog(filterViewModel.date).apply {
+            MonthYearPickerDialog(tsViewModel.date).apply {
                 setListener { _, year, month, dayOfMonth ->
                     Toast.makeText(
                         requireContext(),
                         "Set date: $year/$month/$dayOfMonth",
                         Toast.LENGTH_LONG
                     ).show()
-                    val monthYearFormatted = "${String.format("%02d", month + 1)}-$year"
-                    filterViewModel.updateEndMonthAndYear(monthYearFormatted)
+                    val monthYearFormatted = "$year-${String.format("%02d", month + 1)}"
+                    tsViewModel.updateEndMonthAndYear(monthYearFormatted)
                 }
                 show(this@TimeSeriesFragment.parentFragmentManager, "MonthYearPickerDialog")
             }
@@ -290,11 +302,11 @@ class TimeSeriesFragment : Fragment() {
         autoCompleteTextView.onItemClickListener =
             AdapterView.OnItemClickListener { parent, _, _, id ->
                 val item = parent?.getItemAtPosition(id.toInt()).toString()
-                filterViewModel.updateCat(item)
+                tsViewModel.updateCat(item)
                 binding.cbCat.isChecked = false
             }
 
-        autoCompleteTextView.setText(filterViewModel.filters.cat.value)
+        autoCompleteTextView.setText(tsViewModel.filters.cat.value)
 
         displayCategoriesList()
     }

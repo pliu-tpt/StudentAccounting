@@ -27,15 +27,10 @@
             android:orientation="vertical">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvFilteredAggregate"
+                android:id="@+id/rvFilteredAggregateAndTransaction"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10sp" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvFilteredTransactions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

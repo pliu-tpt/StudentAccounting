@@ -7,7 +7,7 @@ import com.example.studentaccounting.db.entities.relations.OptionWithTotal
 import com.example.studentaccounting.db.entities.relations.TransactionWithConversion
 import java.util.*
 
-class FilterViewModel: ViewModel() {
+class BudgetViewModel: ViewModel() {
     var filteredTransactions = MutableLiveData<List<TransactionWithConversion>>() // each transaction, converted
     var optionWithTotal = MutableLiveData<List<OptionWithTotal>>() // each aggregate, converted
 

@@ -11,14 +11,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:weightSum="2">
+        android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5sp"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:orientation="vertical"
             android:weightSum="5">
 
@@ -29,7 +28,8 @@
                 android:layout_marginHorizontal="8sp"
                 android:layout_marginTop="5sp"
                 android:layout_weight="2.5"
-                android:text="Example"
+                android:maxEms="10"
+                android:text="Waytoomuchwordsloltotahahabbdhdhdb"
                 android:textColor="@android:color/holo_blue_dark"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -56,7 +56,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="0dp"
                     android:layout_weight="1"
-                    android:text="ExampleAvion"
+                    android:text="ExampleAvionLOLOLOLOLOOLOLOL"
                     android:textSize="12sp" />
             </LinearLayout>
 
@@ -66,7 +66,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="5sp"
-            android:layout_weight="1"
+            android:layout_weight="1.3"
             android:gravity="right"
             android:orientation="vertical"
             android:weightSum="5">
@@ -82,7 +82,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5sp"
                     android:layout_marginRight="5sp"
-                    android:text="350"
+                    android:text="35000.00"
                     android:textColor="@android:color/holo_blue_dark"
                     android:textSize="18sp" />
 
@@ -92,7 +92,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="5sp"
                     android:layout_marginRight="5sp"
-                    android:text="EUR"
+                    android:text="SGD"
                     android:textColor="@android:color/holo_blue_dark"
                     android:textSize="18sp" />
 
