@@ -111,7 +111,7 @@ class PagerViewAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activ
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> TransactionListContainerFragment()
-            1 -> FilterFragment()
+            1 -> FilterContainerFragment()
             2 -> TimeSeriesFragment()
             3 -> BudgetFragment()
             4 -> CountsFragment()

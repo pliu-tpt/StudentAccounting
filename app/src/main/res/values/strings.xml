@@ -9,7 +9,7 @@
     <string name="amount_e_g_10_02">(e.g. 10.02)</string>
     <string name="name">Name</string>
     <string name="next"><![CDATA[>Next]]></string>
-    <string name="select_a_category">Select a Category:</string>
+    <string name="select_a_category_column">Select a Category:</string>
     <string name="add">Add</string>
     <string name="new_category">New Category</string>
     <string name="spending_or_earning">Spending or Earning ?</string>
@@ -28,7 +28,7 @@
     <string name="add_a_transaction">Add a Transaction</string>
     <string name="summary_column">Summary :</string>
     <string name="amount">Amount:</string>
-    <string name="type">Type:</string>
+    <string name="type">Type</string>
     <string name="name_column">Name:</string>
     <string name="currency_column">Currency:</string>
     <string name="confirm">Confirm</string>
@@ -49,4 +49,6 @@
     <string name="select_month">Select Month</string>
     <string name="start_month">Start Month</string>
     <string name="end_month">End Month</string>
+    <string name="subcategory">Subcategory</string>
+    <string name="date_format">yyyy-mm-dd</string>
 </resources>

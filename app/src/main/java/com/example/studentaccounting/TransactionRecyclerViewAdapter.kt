@@ -1,5 +1,6 @@
 package com.example.studentaccounting
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentaccounting.databinding.TransactionItemBinding
 import com.example.studentaccounting.db.entities.relations.TransactionWithConversion
+import java.text.SimpleDateFormat
 
 class TransactionRecyclerViewAdapter(
     private val clickListener: (TransactionWithConversion, View) -> Unit
@@ -35,6 +37,11 @@ class TransactionRecyclerViewAdapter(
 }
 
 class TransactionViewHolder(private val binding: TransactionItemBinding): RecyclerView.ViewHolder(binding.root){
+
+    @SuppressLint("SimpleDateFormat")
+    private val originalFormatter : SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
+    @SuppressLint("SimpleDateFormat")
+    private val destinationFormatter : SimpleDateFormat = SimpleDateFormat("dd/MM/yyyy")
     fun bind(t: TransactionWithConversion, clickListener: (TransactionWithConversion, View) -> Unit){
         binding.apply {
             val transaction = t.transaction
@@ -50,6 +57,8 @@ class TransactionViewHolder(private val binding: TransactionItemBinding): Recycl
             tvNameCard.text = transaction.name
             tvCurrencyCardReal.text = transaction.currency
             tvType.text = transaction.type
+
+            tvDate.text = destinationFormatter.format(originalFormatter.parse(transaction.date))
 
             tvAmountCard.setTextColor(
                 ContextCompat.getColor(

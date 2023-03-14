@@ -48,13 +48,25 @@ class TransactionViewModel(private val dao:TransactionDao, private val currencyD
 
     val formatter : SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
 
+    var transactionToEdit = MutableLiveData<Transaction>()
+
     init {
         initSelection()
     }
 
+    fun updateTransactionToEdit(transaction: Transaction) {
+        transactionToEdit.value = transaction
+    }
+
+    fun editTransaction(transaction: Transaction) = viewModelScope.launch {
+//        insertCurrencyToDao(transaction.currency)
+        dao.updateTransaction(transaction)
+        Log.i(MYTAG, "Transaction ${transaction.id} modified: ${transaction.name}, ${transaction.amount}, ${transaction.currency}")
+    }
+
     // The following is executed SEQUENTIALLY by using suspend for both insertCurrencyToDao and dao.insertTransaction
     fun insertTransaction(transaction: Transaction) = viewModelScope.launch {
-        insertCurrencyToDao(transaction.currency)
+        insertCurrencyToDao(transaction.currency) // if the currency doesn't exist
         dao.insertTransaction(transaction)
     }
 
@@ -172,6 +184,10 @@ class TransactionViewModel(private val dao:TransactionDao, private val currencyD
             "%02d".format(month),
             "%02d".format(year)
         )
+    }
+
+    suspend fun getTypeAggregate(): List<OptionWithTotal>? {
+        return preferredCurrency.value?.let { dao.getTypeAggregate(it) }
     }
 
     suspend fun getAllFiltered(filters:Filters): List<Transaction>? {

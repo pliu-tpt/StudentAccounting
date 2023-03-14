@@ -22,7 +22,7 @@
             android:layout_height="0dp"
             android:layout_margin="15dp"
             android:layout_weight="15"
-            android:text="@string/select_a_category"
+            android:text="@string/select_a_category_column"
             android:textColor="@color/purple_700"
             android:textSize="34sp"
             android:textStyle="bold" />

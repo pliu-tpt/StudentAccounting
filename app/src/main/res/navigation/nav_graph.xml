@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_transactionListFragment_to_selectIsSpendingFragment"
             app:destination="@id/selectIsSpendingFragment" />
+        <action
+            android:id="@+id/action_transactionListFragment_to_editTransactionFragment"
+            app:destination="@id/editTransactionFragment" />
     </fragment>
     <fragment
         android:id="@+id/selectCategoryFragment"
@@ -90,23 +93,12 @@
             app:destination="@id/selectAmountFragment" />
     </fragment>
     <fragment
-        android:id="@+id/filterFragment"
-        android:name="com.example.studentaccounting.FilterFragment"
-        android:label="fragment_filter"
-        tools:layout="@layout/fragment_filter" />
-    <fragment
-        android:id="@+id/timeSeriesFragment"
-        android:name="com.example.studentaccounting.TimeSeriesFragment"
-        android:label="fragment_time_series"
-        tools:layout="@layout/fragment_time_series" />
-    <fragment
-        android:id="@+id/countsFragment"
-        android:name="com.example.studentaccounting.CountsFragment"
-        android:label="fragment_counts"
-        tools:layout="@layout/fragment_counts" />
-    <fragment
-        android:id="@+id/budgetFragment"
-        android:name="com.example.studentaccounting.BudgetFragment"
-        android:label="fragment_budget"
-        tools:layout="@layout/fragment_budget" />
+        android:id="@+id/editTransactionFragment"
+        android:name="com.example.studentaccounting.EditTransactionFragment"
+        android:label="fragment_edit_transaction"
+        tools:layout="@layout/fragment_edit_transaction" >
+        <action
+            android:id="@+id/action_editTransactionFragment_to_transactionListFragment"
+            app:destination="@id/transactionListFragment" />
+    </fragment>
 </navigation>

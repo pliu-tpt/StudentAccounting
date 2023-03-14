@@ -19,16 +19,16 @@ interface TransactionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(transactions: List<Transaction?>?)
 
-    @Update
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateTransaction(transaction: Transaction)
 
     @Delete
     suspend fun deleteTransaction(transaction: Transaction)
 
-    @Query("SELECT * FROM transaction_table")
+    @Query("SELECT * FROM transaction_table ORDER BY transaction_date DESC")
     fun getAllTransactions(): LiveData<List<Transaction>> // separate co.rout.
 
-    @Query("SELECT * FROM transaction_table")
+    @Query("SELECT * FROM transaction_table ORDER BY transaction_date DESC")
     suspend fun getAllTransactionsList(): List<Transaction> // separate co.rout.
 
     @Query(
@@ -92,6 +92,14 @@ interface TransactionDao {
 //    suspend fun getCatAggregate(preferredCurrency: String): List<OptionWithTotal>
     // get for each category a sum after having converted the currencies to the preferredCurrency (the amount is the amount SPENT)
 
+    @Query("SELECT transaction_type AS option, SUM(CASE WHEN isSpending = 1 THEN preferred_currency_amount ELSE -preferred_currency_amount END) AS total \n" +
+            "FROM (SELECT t.* ,transaction_amount * rate AS preferred_currency_amount, :preferredCurrency AS preferred_currency \n" +
+            "FROM transaction_table as t LEFT JOIN (SELECT currency_name, destination / departure AS rate FROM\n" +
+            "                                   (SELECT currency_name, USD_to_it AS departure, (SELECT USD_to_it FROM currency_table WHERE currency_name = :preferredCurrency) AS destination FROM currency_table)) AS c\n" +
+            "                                   ON t.transaction_currency = c.currency_name)\n" +
+            "                            GROUP BY transaction_type\n" +
+            "                            ORDER BY total DESC;")
+    suspend fun getTypeAggregate(preferredCurrency: String): List<OptionWithTotal>
 
     @RawQuery(observedEntities = [Transaction::class, Currency::class])
     suspend fun getAllFilteredAggregated(query: SupportSQLiteQuery): List<OptionWithTotal>?

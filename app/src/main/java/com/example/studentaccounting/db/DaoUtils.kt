@@ -54,7 +54,7 @@ public final class DaoUtils {
             val filteredQuery = getFilterConditionsQueryPair(filters)
 
             var query : String = "" // to construct the SQL Query
-            var bindArgs = mutableListOf<Any>() // to give the necessary arguments
+            val bindArgs = mutableListOf<Any>() // to give the necessary arguments
 
             if (filters.prefCurrency.value.isNullOrEmpty()) {
                 Log.i(MYTAG, "Couldn't Aggregate given filter")
@@ -68,8 +68,12 @@ public final class DaoUtils {
 
                 query +=") AS t LEFT JOIN (SELECT currency_name,  destination / departure AS rate FROM \n" +
                         "       (SELECT currency_name, USD_to_it AS departure, (SELECT USD_to_it FROM currency_table WHERE currency_name=?) AS destination FROM currency_table)) AS c \n" +
-                        "       ON t.transaction_currency = c.currency_name;"
+                        "       ON t.transaction_currency = c.currency_name"
                 bindArgs.add(filters.prefCurrency.value!!)
+
+                if (filters.isSortedByDate){
+                    query+="\n ORDER BY transaction_date DESC;"
+                }
             }
             return query to bindArgs
         }
@@ -78,7 +82,7 @@ public final class DaoUtils {
             val filteredQuery = getFilterConditionsQueryPair(filters)
 
             var query : String = "" // to construct the SQL Query
-            var bindArgs = mutableListOf<Any>() // to give the necessary arguments
+            val bindArgs = mutableListOf<Any>() // to give the necessary arguments
 
             if (filters.cat.value == "-1" || filters.cat.value.isNullOrBlank()) {
                 if (filters.prefCurrency.value.isNullOrEmpty()) {
@@ -129,7 +133,7 @@ public final class DaoUtils {
         fun getLineGraphConditionsQueryPair(filters: Filters): Pair<String, MutableList<Any>?> {
 
             var query : String = "" // to construct the SQL Query
-            var bindArgs = mutableListOf<Any>() // to give the necessary arguments
+            val bindArgs = mutableListOf<Any>() // to give the necessary arguments
 
             if (filters.cat.value == "-1" || filters.cat.value.isNullOrBlank()) {
                 if (filters.prefCurrency.value.isNullOrEmpty()) {

@@ -1,6 +1,5 @@
 package com.example.studentaccounting
 
-import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.studentaccounting.db.CurrencyDao

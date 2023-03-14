@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
-import com.example.studentaccounting.databinding.FragmentTransactionListContainerBinding
+import com.example.studentaccounting.databinding.FragmentFilterContainerBinding
 
-// This container class contains the nav graph for selecting a Transaction.
+// This container class contains the nav graph for selecting a Transaction after filtering.
 // Back Pressed Navigation is implemented thanks to the reimplementation of handleOnBackPressed
-class TransactionListContainerFragment : Fragment() {
+class FilterContainerFragment : Fragment() {
 
-    private lateinit var binding: FragmentTransactionListContainerBinding
+    private lateinit var binding: FragmentFilterContainerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,9 +24,9 @@ class TransactionListContainerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        binding = FragmentTransactionListContainerBinding.inflate(inflater, container, false)
+        binding = FragmentFilterContainerBinding.inflate(inflater, container, false)
 
-        val navHostFragment = childFragmentManager.findFragmentById(R.id.topLayout1) as NavHostFragment
+        val navHostFragment = childFragmentManager.findFragmentById(R.id.topLayout) as NavHostFragment
 
         val callback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {

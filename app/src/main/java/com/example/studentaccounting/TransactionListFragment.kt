@@ -39,6 +39,8 @@ class TransactionListFragment : Fragment() {
 
     private lateinit var adapter: TransactionRecyclerViewAdapter
 
+    private lateinit var aggAdapter: AggregateTypeRecyclerViewAdapter
+
     private lateinit var extension : String
 
     companion object {
@@ -108,6 +110,7 @@ class TransactionListFragment : Fragment() {
         binding = FragmentTransactionListBinding.inflate(inflater, container, false)
 
         initRecyclerView()
+        initRVType()
 
         binding.btnAddNew.setOnClickListener {
             it.findNavController().navigate(R.id.action_transactionListFragment_to_selectIsSpendingFragment)
@@ -206,13 +209,35 @@ class TransactionListFragment : Fragment() {
         }
     }
 
+
+    private fun initRVType(){
+
+        binding.rvTypeAggregate.layoutManager = LinearLayoutManager(requireContext())
+        aggAdapter = AggregateTypeRecyclerViewAdapter(viewModel.preferredCurrency.value!!){}
+        binding.rvTypeAggregate.adapter = aggAdapter
+
+        displayRVType()
+    }
+
+    private fun displayRVType(){
+        viewModel.transactions.observe(viewLifecycleOwner){
+            CoroutineScope(Dispatchers.Main).launch {
+                viewModel.getTypeAggregate()
+                    ?.let { it1 ->
+                        aggAdapter.setList(it1)
+//                        aggAdapter.addTotal()
+                        aggAdapter.notifyDataSetChanged()
+                    }
+            }
+        }
+    }
+
     private fun initRecyclerView(){
 
         binding.rvTransactions.layoutManager = LinearLayoutManager(requireContext())
         adapter = TransactionRecyclerViewAdapter{
             selectedTransaction, view -> transactionListItemLongClicked(selectedTransaction, view)
         }
-
         binding.rvTransactions.adapter = adapter
 
         displayTransactionTypesList()
@@ -221,7 +246,7 @@ class TransactionListFragment : Fragment() {
     private fun displayTransactionTypesList(){
         viewModel.preferredCurrency.observe(viewLifecycleOwner) {
             CoroutineScope(Dispatchers.Main).launch {
-                viewModel.getAllFilteredWithPrefCurrency(Filters(prefCurrency = viewModel.preferredCurrency))?.let { it1 -> adapter.setList(it1) }
+                viewModel.getAllFilteredWithPrefCurrency(Filters(prefCurrency = viewModel.preferredCurrency, isSortedByDate = true))?.let { it1 -> adapter.setList(it1) }
                 adapter.notifyDataSetChanged()
             }
         }
@@ -235,7 +260,7 @@ class TransactionListFragment : Fragment() {
 
         viewModel.transactions.observe(viewLifecycleOwner) {
             CoroutineScope(Dispatchers.Main).launch {
-                viewModel.getAllFilteredWithPrefCurrency(Filters(prefCurrency = viewModel.preferredCurrency))?.let { it1 -> adapter.setList(it1) }
+                viewModel.getAllFilteredWithPrefCurrency(Filters(prefCurrency = viewModel.preferredCurrency, isSortedByDate = true))?.let { it1 -> adapter.setList(it1) }
                 adapter.notifyDataSetChanged()
             }
         }
@@ -288,6 +313,8 @@ class TransactionListFragment : Fragment() {
                 R.id.edit -> {
                     // Handle Edit option
                     Log.i("MYTAG", "Edit transaction number ${transaction.id}")
+                    viewModel.updateTransactionToEdit(transaction)
+                    requireView().findNavController().navigate(R.id.action_transactionListFragment_to_editTransactionFragment)
                     true
                 }
                 R.id.delete -> {

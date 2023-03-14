@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.studentaccounting.TransactionListFragment.Companion.MYTAG
@@ -253,6 +254,8 @@ class FilterFragment : Fragment() {
                 R.id.edit -> {
                     // Handle Edit option
                     Log.i("MYTAG", "Edit transaction number ${transaction.id}")
+                    viewModel.updateTransactionToEdit(transaction)
+                    requireView().findNavController().navigate(R.id.action_filterFragment_to_editTransactionFragment)
                     true
                 }
                 R.id.delete -> {
