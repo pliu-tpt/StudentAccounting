@@ -37,7 +37,7 @@ class TransactionListFragment : Fragment() {
     private val viewModel : TransactionViewModel by activityViewModels()
     private lateinit var binding: FragmentTransactionListBinding
 
-    private lateinit var adapter: TransactionRecyclerViewAdapter
+    private lateinit var adapter: TransactionGroupRecyclerViewAdapter
 
     private lateinit var aggAdapter: AggregateTypeRecyclerViewAdapter
 
@@ -235,7 +235,7 @@ class TransactionListFragment : Fragment() {
     private fun initRecyclerView(){
 
         binding.rvTransactions.layoutManager = LinearLayoutManager(requireContext())
-        adapter = TransactionRecyclerViewAdapter{
+        adapter = TransactionGroupRecyclerViewAdapter(viewModel.preferredCurrency.value!!){
             selectedTransaction, view -> transactionListItemLongClicked(selectedTransaction, view)
         }
         binding.rvTransactions.adapter = adapter
