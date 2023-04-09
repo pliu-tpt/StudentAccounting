@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="spending">#8F1C14</color>
     <color name="earning">#348737</color>
+    <color name="grey_light">#F1F1F1</color>
+    <color name="grey_average">#00AFE3</color>
 </resources>
