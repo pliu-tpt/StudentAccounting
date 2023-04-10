@@ -220,6 +220,19 @@ class FilterFragment : Fragment() {
                     }
             }
         }
+
+        filterViewModel.filters.year.observe(viewLifecycleOwner){
+            val boolean = (it == "-1")
+            val startMonth = if (boolean) { // counting since the beginning of time
+                viewModel.transactions.value?.map{ it1 -> it1.date }?.min()
+            } else {
+                "${it}-${filterViewModel.filters.month.value}-01"
+            }
+            if (startMonth != null) {
+                aggAdapter.updateIsAllTime(boolean, startMonth)
+            }
+            aggAdapter.notifyDataSetChanged()
+        }
     }
 
     private fun displayTransactionTypesList(){
