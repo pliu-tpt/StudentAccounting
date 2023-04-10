@@ -51,7 +51,7 @@ class AggregateRecyclerViewAdapter(
         optionList.forEach {
             total += it.total
         }
-        optionList.add(OptionWithTotal("TOTAL SPENDING", total))
+        optionList.add(OptionWithTotal("TOTAL SPENT", total))
     }
 
     fun updateIsAllTime(boolean: Boolean, startMonth: String){
