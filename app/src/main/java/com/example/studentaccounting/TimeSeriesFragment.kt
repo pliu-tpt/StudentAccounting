@@ -18,6 +18,8 @@ import com.github.aachartmodel.aainfographics.aachartcreator.AASeriesElement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 import kotlin.math.roundToInt
 
 class TimeSeriesFragment : Fragment() {
@@ -128,6 +130,21 @@ class TimeSeriesFragment : Fragment() {
 //        filterViewModel.lineGraphAggregated.value = filterViewModel.lineGraphAggregated.value
     }
 
+    private fun getMonthYearPairs(startMonthYear: String, endMonthYear: String): List<String> {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM")
+        val startMonth = YearMonth.parse(startMonthYear, formatter)
+        val endMonth = YearMonth.parse(endMonthYear, formatter)
+
+        val monthYearPairs = mutableListOf<String>()
+        var currentMonth = startMonth
+        while (currentMonth.isBefore(endMonth.plusMonths(1))) {
+            monthYearPairs.add(currentMonth.format(formatter))
+            currentMonth = currentMonth.plusMonths(1)
+        }
+
+        return monthYearPairs
+    }
+
     private fun buildAACharModelFrom(list: List<OptionWithDateAndTotal>?): AAChartModel {
         Log.i(MYTAG, "Before generating the chart model, the lineGraphAggregated is ${tsViewModel.lineGraph.value}")
         val defaultValue = AAChartModel()
@@ -148,7 +165,7 @@ class TimeSeriesFragment : Fragment() {
         var allSeries : MutableList<Any> = mutableListOf<Any>() // contains a list of AASeriesElement
 
         val allOptions = list.map { it -> it.option }.distinct()
-        val allDates = list.map { it -> it.month }.distinct()
+        val allDates = list.map { it -> it.month }.distinct() // all distincts "year-month" pairs
         val startMonth = allDates.min().split("-")
         val endMonth = allDates.max().split("-")
 
@@ -162,9 +179,14 @@ class TimeSeriesFragment : Fragment() {
 
 //        println("Number of months:$allCategoriesDateSize")
 
-        var allCategoriesDate = List<String>(allCategoriesDateSize, init = {
-                index -> "${startY + index / 12}-${String.format("%02d", 1+(startM - 1 + index % 12)%12)}"
-        }) // (e.g. [2022-7, 2022-8])
+//        var allCategoriesDate = List<String>(allCategoriesDateSize, init = {
+//                index -> "${startY + index / 12}-${String.format("%02d", 1+(startM - 1 + index % 12)%12)}"
+//        }) // (e.g. [2022-7, 2022-8])
+
+        var allCategoriesDate = getMonthYearPairs(allDates.min(), allDates.max())
+
+        Log.i("TS", "$startM-$startY: $endM-$endY")
+        Log.i("TS", allCategoriesDate.toString())
 
         for (option in allOptions) { // iterate through all options, (e.g. Voyage, Bouffe)
             Log.i(MYTAG, option)
