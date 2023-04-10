@@ -21,6 +21,7 @@ import com.example.studentaccounting.db.entities.relations.TransactionWithConver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.util.*
 
 class FilterFragment : Fragment() {
@@ -51,8 +52,9 @@ class FilterFragment : Fragment() {
         updateFilteredTransactions()
         setupAutoCompleteTextView()
         initAggregateRecyclerViewAndList()
-//        initFilteredRecyclerView()
-//        initAggregateRecyclerView()
+
+        // default value at init
+        filterLayoutBinding.tvMonth.text = "${String.format("%02d", LocalDate.now().monthValue)}-${LocalDate.now().year}"
 
 
         filterViewModel.filters.month.observe(viewLifecycleOwner) {
