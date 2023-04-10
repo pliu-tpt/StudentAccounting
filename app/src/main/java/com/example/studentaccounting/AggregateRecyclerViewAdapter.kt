@@ -10,6 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.studentaccounting.TransactionListFragment.Companion.MYTAG
 import com.example.studentaccounting.databinding.OptionTotalItemBinding
 import com.example.studentaccounting.db.entities.relations.OptionWithTotal
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class AggregateRecyclerViewAdapter(
@@ -18,6 +22,10 @@ class AggregateRecyclerViewAdapter(
 ): RecyclerView.Adapter<OptionAggregateViewHolder>() {
 
     private val optionList = ArrayList<OptionWithTotal>() // list of options
+    private var isAllTime : Boolean = false
+    private var averageMode = "/month"
+    private var startingMonth = "" // the starting month from which we count months or days.
+    private var divideBy : Long = 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionAggregateViewHolder {
         val binding = OptionTotalItemBinding.inflate(LayoutInflater.from(parent.context),parent, false)
@@ -29,7 +37,7 @@ class AggregateRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: OptionAggregateViewHolder, position: Int) {
-        holder.bind(optionList[position], clickListener, position, aggCurrency)
+        holder.bind(optionList[position], clickListener, position, aggCurrency, averageMode, divideBy)
     }
 
     fun setList(options:List<OptionWithTotal>){
@@ -46,11 +54,30 @@ class AggregateRecyclerViewAdapter(
         optionList.add(OptionWithTotal("TOTAL SPENDING", total))
     }
 
+    fun updateIsAllTime(boolean: Boolean, startMonth: String){
+        isAllTime = boolean
+        startingMonth = startMonth
+
+        val parsedDate = LocalDate.parse(startingMonth)
+        val now = LocalDate.now()
+
+        if (isAllTime){
+            averageMode = "/month"
+            divideBy = ChronoUnit.MONTHS.between(parsedDate, now)
+        } else {
+            averageMode = "/day"
+            divideBy = if (parsedDate.month == now.month && parsedDate.year == now.year) {
+                ChronoUnit.DAYS.between(parsedDate, LocalDate.now())
+            } else {
+                parsedDate.lengthOfMonth().toLong()
+            }
+        }
+    }
 }
 
 class OptionAggregateViewHolder(private val binding: OptionTotalItemBinding): RecyclerView.ViewHolder(binding.root){
     @SuppressLint("SetTextI18n")
-    fun bind(option:OptionWithTotal, clickListener:(OptionWithTotal)->Unit, position: Int, aggCurrency: String){
+    fun bind(option:OptionWithTotal, clickListener:(OptionWithTotal)->Unit, position: Int, aggCurrency: String, averageMode:String, divideBy:Long){
         binding.apply {
 
             tvOption.textSize = 14F
@@ -58,6 +85,7 @@ class OptionAggregateViewHolder(private val binding: OptionTotalItemBinding): Re
             tvOption.setTypeface(null, Typeface.NORMAL)
             tvTotal.setTypeface(null, Typeface.NORMAL)
 
+            tvAverage.text = "${String.format("%.0f",abs(option.total)/divideBy)}$aggCurrency$averageMode"
             if (option.total >= 0) {
                 tvOption.text = "   +   ${option.option}"
                 with (R.color.spending) {
@@ -78,12 +106,12 @@ class OptionAggregateViewHolder(private val binding: OptionTotalItemBinding): Re
 
             tvTotal.text = "${String.format("%.2f",abs(option.total))} $aggCurrency"
 
-            if (option.option == "TOTAL SPENDING"){
+            if (option.option == "TOTAL SPENT"){
                 tvOption.text = "       ${option.option}"
                 tvTotal.text = "${String.format("%.2f",option.total)} $aggCurrency"
 
-                tvOption.textSize = 18F
-                tvTotal.textSize = 18F
+                tvOption.textSize = 16F
+                tvTotal.textSize = 16F
                 tvOption.setTypeface(null, Typeface.BOLD)
                 tvTotal.setTypeface(null, Typeface.BOLD)
                 with (R.color.black) {
