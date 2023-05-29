@@ -27,6 +27,7 @@ abstract class AppDatabase : RoomDatabase(){
                         AppDatabase::class.java,
                         "application_database"
                     )
+                        .allowMainThreadQueries() // this allows Main thread Queries, to use carefully and only light queries should be used.
                         .build()
                 }
                 return instance

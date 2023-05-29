@@ -48,6 +48,8 @@ class TimeSeriesFragment : Fragment() {
         updateGraphTransactions()
         setupAutoCompleteTextView()
 
+        tsViewModel.filters.prefCurrency.value = viewModel.preferredCurrency.value
+
         tsViewModel.filters.startMonth.observe(viewLifecycleOwner) {
             if (it == "-1"){
                  if (tsViewModel.filters.endMonth.value == "-1") {
@@ -77,7 +79,7 @@ class TimeSeriesFragment : Fragment() {
             if (it == "-1") {
                 resetCat()
             } else {
-                autoCompleteTextView.setText(it)
+                autoCompleteTextView.setText(it, false)
             }
             updateGraphTransactions()
         }
@@ -110,6 +112,11 @@ class TimeSeriesFragment : Fragment() {
         }
 
         viewModel.transactions.observe(viewLifecycleOwner){
+            updateGraphTransactions()
+        }
+
+        viewModel.preferredCurrency.observe(viewLifecycleOwner){
+            tsViewModel.filters.prefCurrency.value = viewModel.preferredCurrency.value
             updateGraphTransactions()
         }
 

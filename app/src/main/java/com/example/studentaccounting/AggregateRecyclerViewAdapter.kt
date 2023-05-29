@@ -17,7 +17,7 @@ import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 class AggregateRecyclerViewAdapter(
-    private val aggCurrency: String,
+    private var aggCurrency: String,
     private val clickListener:(OptionWithTotal)->Unit
 ): RecyclerView.Adapter<OptionAggregateViewHolder>() {
 
@@ -52,6 +52,10 @@ class AggregateRecyclerViewAdapter(
             total += it.total
         }
         optionList.add(OptionWithTotal("TOTAL SPENT", total))
+    }
+
+    fun updatePrefCurrency(prefCurrency:String){
+        aggCurrency = prefCurrency
     }
 
     fun updateIsAllTime(boolean: Boolean, startMonth: String){

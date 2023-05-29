@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat
 import kotlin.math.absoluteValue
 
 class TransactionGroupRecyclerViewAdapter(
-    private val preferredCurrency: String,
+    private var preferredCurrency: String,
     private val clickListener: (TransactionWithConversion, View) -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -105,6 +105,10 @@ class TransactionGroupRecyclerViewAdapter(
         transactionList.clear()
         transactionList.addAll(transactions)
         updateTransactionGroups()
+    }
+
+    fun setPreferredCurrency(prefCurrency: String){
+        preferredCurrency = prefCurrency
     }
 
 }

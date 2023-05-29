@@ -20,6 +20,7 @@ import com.github.aachartmodel.aainfographics.aachartcreator.AASeriesElement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -49,9 +50,14 @@ class BudgetFragment : Fragment() {
         binding = FragmentBudgetBinding.inflate(inflater, container, false)
         filterLayoutBinding = CommonFilterLayoutBinding.bind(binding.root)
 
+        budgetViewModel.filters.prefCurrency.value = viewModel.preferredCurrency.value
+        filterLayoutBinding.tvMonth.text = "${String.format("%02d", LocalDate.now().monthValue)}-${LocalDate.now().year}"
+
         updateFilteredTransactions()
         setupAutoCompleteTextView()
         setupPieChart()
+
+
 
         budgetViewModel.filters.month.observe(viewLifecycleOwner) {
             Log.i(MYTAG,"Observer Month Modification to : ${it.toString()}")
@@ -74,7 +80,7 @@ class BudgetFragment : Fragment() {
             if (it == "-1") {
                 resetCat()
             } else {
-                autoCompleteTextView.setText(it)
+                autoCompleteTextView.setText(it, false)
             }
             updateFilteredTransactions()
         }
@@ -108,6 +114,15 @@ class BudgetFragment : Fragment() {
 //            }
 //        }
 //
+        viewModel.preferredCurrency.observe(viewLifecycleOwner){
+            budgetViewModel.filters.prefCurrency.value = viewModel.preferredCurrency.value
+            CoroutineScope(Dispatchers.Main).launch {
+                viewModel.getAllFilteredAggregated(budgetViewModel.filters)
+                    ?.let { it1 ->
+                        budgetViewModel.updateOptionWithTotal(it1)
+                    }
+            }
+        }
         budgetViewModel.filteredTransactions.observe(viewLifecycleOwner){
             CoroutineScope(Dispatchers.Main).launch {
                 viewModel.getAllFilteredAggregated(budgetViewModel.filters)
