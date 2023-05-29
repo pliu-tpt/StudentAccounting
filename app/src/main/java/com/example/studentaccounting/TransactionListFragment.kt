@@ -247,6 +247,7 @@ class TransactionListFragment : Fragment() {
         viewModel.preferredCurrency.observe(viewLifecycleOwner) {
             CoroutineScope(Dispatchers.Main).launch {
                 viewModel.getAllFilteredWithPrefCurrency(Filters(prefCurrency = viewModel.preferredCurrency, isSortedByDate = true))?.let { it1 -> adapter.setList(it1) }
+                adapter.setPreferredCurrency(viewModel.preferredCurrency.value!!)
                 adapter.notifyDataSetChanged()
             }
         }

@@ -21,4 +21,7 @@ interface CurrencyDao {
 
     @Query("SELECT * FROM currency_table")
     fun getAllCurrencies(): LiveData<List<Currency>> // separate co.rout.
+
+    @Query("SELECT currency_name FROM currency_table")
+    fun getAllCurrenciesSync(): List<String>
 }

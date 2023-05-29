@@ -1,15 +1,23 @@
 package com.example.studentaccounting
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
+import android.view.*
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.example.studentaccounting.databinding.ActivityMainBinding
 import com.example.studentaccounting.db.AppDatabase
 import com.google.android.material.navigation.NavigationBarView
+import kotlinx.coroutines.launch
 
 //import com.example.studentaccounting.db.TransactionDatabase
 
@@ -76,6 +84,8 @@ class MainActivity : AppCompatActivity() {
         val dao = AppDatabase.getInstance(application)!!.transactionDao()
         val currencyDao = AppDatabase.getInstance(application)!!.currencyDao()
 
+        Log.i("WOW", dao.getAllCurrency().value.toString())
+
         val factory = TransactionViewModelFactory(dao,currencyDao)
         viewModel = ViewModelProvider(this,factory)[TransactionViewModel::class.java]
 
@@ -103,6 +113,56 @@ class MainActivity : AppCompatActivity() {
         // BNView notifying the Pager of a change
         activityMainBinding.bNavView.setOnItemSelectedListener(mOnItemSelectedListener)
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_settings -> {
+                showChangeDefaultDialog()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun showChangeDefaultDialog() {
+        // val options = viewModel.currencies.value
+
+        var dialog: AlertDialog? = null
+
+        val adapter = OptionAdapter(emptyList()) { option ->
+            // update default value in view model
+            viewModel.preferredCurrency.value = option
+            dialog?.dismiss()
+        }
+
+        lifecycleScope.launch {
+            val options = viewModel.getAllCurrencies() // Warning: this call is synchronous because light
+            Log.i("WOW",options.toString())
+            adapter.updateOptions(options)
+        }
+
+        val recyclerView = RecyclerView(this)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+
+        dialog = AlertDialog.Builder(this)
+            .setTitle("Change Preferred Currency")
+            .setNegativeButton("Cancel", null)
+            .setView(recyclerView)
+            .create()
+
+        dialog.show()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.preferred_currency_menu, menu)
+
+        viewModel.currencies.observe(this){
+
+        }
+
+        return true
+    }
 }
 
 // Adapter related to the Pager
@@ -117,6 +177,35 @@ class PagerViewAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activ
             4 -> CountsFragment()
             else -> TransactionListContainerFragment()
         }
+    }
+}
+
+class OptionAdapter(
+    private var options: List<String>,
+    private val onClick: (String) -> Unit
+) : RecyclerView.Adapter<OptionAdapter.ViewHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(android.R.layout.simple_list_item_1, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val option = options[position]
+        holder.textView.text = option
+        holder.itemView.setOnClickListener { onClick(option) }
+    }
+
+    override fun getItemCount(): Int = options.size
+
+    fun updateOptions(newOptions: List<String>){
+        options = newOptions
+        notifyDataSetChanged()
+    }
+
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val textView: TextView = itemView.findViewById(android.R.id.text1)
     }
 }
 

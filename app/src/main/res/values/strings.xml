@@ -51,4 +51,5 @@
     <string name="end_month">End Month</string>
     <string name="subcategory">Subcategory</string>
     <string name="date_format">yyyy-mm-dd</string>
+    <string name="currency_menu">Change Preferred Currency</string>
 </resources>

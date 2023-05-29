@@ -54,6 +54,10 @@ class TransactionViewModel(private val dao:TransactionDao, private val currencyD
         initSelection()
     }
 
+    suspend fun getAllCurrencies(): List<String> {
+        return currencyDao.getAllCurrenciesSync()
+    }
+
     fun updateTransactionToEdit(transaction: Transaction) {
         transactionToEdit.value = transaction
     }

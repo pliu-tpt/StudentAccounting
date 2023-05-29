@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -31,6 +32,7 @@ class EditTransactionFragment : Fragment() {
     private lateinit var adapterType: ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
         super.onCreate(savedInstanceState)
     }
 
@@ -40,6 +42,7 @@ class EditTransactionFragment : Fragment() {
     ): View? {
 
         binding = FragmentEditTransactionBinding.inflate(inflater, container, false)
+
 
         setupTVCurrency()
         setupTVCategory()

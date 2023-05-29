@@ -49,6 +49,8 @@ class FilterFragment : Fragment() {
         binding = FragmentFilterBinding.inflate(inflater, container, false)
         filterLayoutBinding = CommonFilterLayoutBinding.bind(binding.root)
 
+        filterViewModel.filters.prefCurrency.value = viewModel.preferredCurrency.value
+
         updateFilteredTransactions()
         setupAutoCompleteTextView()
         initAggregateRecyclerViewAndList()
@@ -78,7 +80,7 @@ class FilterFragment : Fragment() {
             if (it == "-1") {
                 resetCat()
             } else {
-                autoCompleteTextView.setText(it)
+                autoCompleteTextView.setText(it, false)
             }
             updateFilteredTransactions()
         }
@@ -102,6 +104,16 @@ class FilterFragment : Fragment() {
                     filterViewModel.updateMonthAndYear(-1, -1)
                 }
                 false -> {}
+            }
+        }
+
+        viewModel.preferredCurrency.observe(viewLifecycleOwner){
+            CoroutineScope(Dispatchers.Main).launch {
+                filterViewModel.filters.prefCurrency.value = it
+                viewModel.getAllFilteredWithPrefCurrency(filterViewModel.filters)
+                    ?.let { it1 -> filterViewModel.updateFilteredTransactions(it1) }
+                filterViewModel.filteredTransactions.value?.let { it1 -> filteredAdapter.setList(it1) }
+                filteredAdapter.notifyDataSetChanged()
             }
         }
 
@@ -211,6 +223,20 @@ class FilterFragment : Fragment() {
     }
 
     private fun displayAggregateOptionList(){
+        viewModel.preferredCurrency.observe(viewLifecycleOwner){
+            CoroutineScope(Dispatchers.Main).launch {
+                filterViewModel.filters.prefCurrency.value = it
+                viewModel.getAllFilteredAggregated(filterViewModel.filters)
+                    ?.let { it1 ->
+                        filterViewModel.updateOptionWithTotal(it1)
+                        aggAdapter.setList(it1)
+                        aggAdapter.addTotal()
+                        aggAdapter.updatePrefCurrency(it)
+                        aggAdapter.notifyDataSetChanged()
+                    }
+            }
+        }
+
         filterViewModel.filteredTransactions.observe(viewLifecycleOwner){
             CoroutineScope(Dispatchers.Main).launch {
                 viewModel.getAllFilteredAggregated(filterViewModel.filters)
@@ -235,6 +261,9 @@ class FilterFragment : Fragment() {
             }
             aggAdapter.notifyDataSetChanged()
         }
+
+
+
     }
 
     private fun displayTransactionTypesList(){
@@ -252,6 +281,8 @@ class FilterFragment : Fragment() {
             filteredAdapter.setList(it)
             filteredAdapter.notifyDataSetChanged()
         }
+
+
     }
 
 //    fun showAllOption(textView: TextView) {
