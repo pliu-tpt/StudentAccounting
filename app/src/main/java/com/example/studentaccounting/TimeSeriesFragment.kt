@@ -11,10 +11,7 @@ import androidx.fragment.app.activityViewModels
 import com.example.studentaccounting.TransactionListFragment.Companion.MYTAG
 import com.example.studentaccounting.databinding.FragmentTimeSeriesBinding
 import com.example.studentaccounting.db.entities.relations.OptionWithDateAndTotal
-import com.github.aachartmodel.aainfographics.aachartcreator.AAChartModel
-import com.github.aachartmodel.aainfographics.aachartcreator.AAChartType
-import com.github.aachartmodel.aainfographics.aachartcreator.AAChartView
-import com.github.aachartmodel.aainfographics.aachartcreator.AASeriesElement
+import com.github.aachartmodel.aainfographics.aachartcreator.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -75,7 +72,7 @@ class TimeSeriesFragment : Fragment() {
         }
 
         tsViewModel.filters.cat.observe(viewLifecycleOwner) {
-            Log.i(TransactionListFragment.MYTAG,"Observer Cat Modification to : ${it.toString()}")
+            Log.i(MYTAG,"Observer Cat Modification to : ${it.toString()}")
             if (it == "-1") {
                 resetCat()
             } else {
@@ -169,7 +166,7 @@ class TimeSeriesFragment : Fragment() {
             return defaultValue
         }
 
-        var allSeries : MutableList<Any> = mutableListOf<Any>() // contains a list of AASeriesElement
+        val allSeries : MutableList<Any> = mutableListOf<Any>() // contains a list of AASeriesElement
 
         val allOptions = list.map { it -> it.option }.distinct()
         val allDates = list.map { it -> it.month }.distinct() // all distincts "year-month" pairs
@@ -190,16 +187,16 @@ class TimeSeriesFragment : Fragment() {
 //                index -> "${startY + index / 12}-${String.format("%02d", 1+(startM - 1 + index % 12)%12)}"
 //        }) // (e.g. [2022-7, 2022-8])
 
-        var allCategoriesDate = getMonthYearPairs(allDates.min(), allDates.max())
+        val allCategoriesDate = getMonthYearPairs(allDates.min(), allDates.max())
 
         Log.i("TS", "$startM-$startY: $endM-$endY")
         Log.i("TS", allCategoriesDate.toString())
 
         for (option in allOptions) { // iterate through all options, (e.g. Voyage, Bouffe)
             Log.i(MYTAG, option)
-            var optionSeries = AASeriesElement().name(option)
+            val optionSeries = AASeriesElement().name(option)
 
-            var optionData = Array<Any>(allCategoriesDateSize) {0.0} // a list of amounts with default value 0
+            val optionData = Array<Any>(allCategoriesDateSize) {0.0} // a list of amounts with default value 0
 
             val filtered = list.filter { it.option == option } // only the values corresponding in option
             val allOptionDates = filtered.map { it.month }
@@ -220,6 +217,18 @@ class TimeSeriesFragment : Fragment() {
             Log.i(MYTAG, optionData.toList().toString())
 
             allSeries.add(optionSeries)
+
+            if (allOptions.count() == 1){ // moving average for a single cat.
+                val optionAveSeries = AASeriesElement()
+                    .name("$option Ave. (3 mo.)")
+                    .dashStyle(AAChartLineDashStyleType.Dash)
+
+                val optionAveData = calculateMovingAverage(optionData, 3)
+
+                optionAveSeries.data(optionAveData)
+                allSeries.add(optionAveSeries)
+
+            }
 
         }
 
@@ -370,6 +379,21 @@ class TimeSeriesFragment : Fragment() {
         editText.isFocusableInTouchMode = true
     }
 
-    private fun Boolean.toInt() = if (this) 1 else 0
+    private fun calculateMovingAverage(numbers: Array<Any>, windowSize: Int): Array<Any> {
+        val movingAverages = arrayOfNulls<Any>(numbers.size)
+
+        for (i in numbers.indices) {
+            val startIndex = maxOf(i - windowSize + 1, 0)
+            val endIndex = i + 1
+
+            val sum = (startIndex until endIndex).sumOf { index ->
+                numbers[index].toString().toDouble()
+            }
+            val average = sum / (endIndex - startIndex)
+            movingAverages[i] = (average*100.0).roundToInt() / 100.00
+        }
+
+        return movingAverages.requireNoNulls()
+    }
 
 }
