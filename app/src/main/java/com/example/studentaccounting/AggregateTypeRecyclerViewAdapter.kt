@@ -11,7 +11,7 @@ import com.example.studentaccounting.db.entities.relations.OptionWithTotal
 import kotlin.math.abs
 
 class AggregateTypeRecyclerViewAdapter(
-    private val aggCurrency: String,
+    private var aggCurrency: String,
     private val clickListener:(OptionWithTotal)->Unit
 ): RecyclerView.Adapter<OptionAggregateTypeViewHolder>() {
 
@@ -33,6 +33,10 @@ class AggregateTypeRecyclerViewAdapter(
     fun setList(options:List<OptionWithTotal>){
         optionList.clear()
         optionList.addAll(options)
+    }
+
+    fun setPreferredCurrency(prefCurrency: String){
+        aggCurrency = prefCurrency
     }
 
 }

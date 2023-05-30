@@ -220,12 +220,18 @@ class TransactionListFragment : Fragment() {
     }
 
     private fun displayRVType(){
+        viewModel.preferredCurrency.observe(viewLifecycleOwner) {
+            CoroutineScope(Dispatchers.Main).launch {
+                viewModel.getTypeAggregate()?.let { it1 -> aggAdapter.setList(it1) }
+                aggAdapter.setPreferredCurrency(viewModel.preferredCurrency.value!!)
+                aggAdapter.notifyDataSetChanged()
+            }
+        }
         viewModel.transactions.observe(viewLifecycleOwner){
             CoroutineScope(Dispatchers.Main).launch {
                 viewModel.getTypeAggregate()
                     ?.let { it1 ->
                         aggAdapter.setList(it1)
-//                        aggAdapter.addTotal()
                         aggAdapter.notifyDataSetChanged()
                     }
             }
