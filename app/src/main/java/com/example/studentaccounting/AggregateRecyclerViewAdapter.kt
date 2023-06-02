@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.studentaccounting.TransactionListFragment.Companion.MYTAG
 import com.example.studentaccounting.databinding.OptionTotalItemBinding
 import com.example.studentaccounting.db.entities.relations.OptionWithTotal
+import java.lang.Long.max
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -67,13 +68,13 @@ class AggregateRecyclerViewAdapter(
 
         if (isAllTime){
             averageMode = "/month"
-            divideBy = ChronoUnit.MONTHS.between(parsedDate, now)
+            divideBy = ChronoUnit.DAYS.between(parsedDate, LocalDate.now()) / 30
         } else {
             averageMode = "/day"
             divideBy = if (parsedDate.month == now.month && parsedDate.year == now.year) {
-                ChronoUnit.DAYS.between(parsedDate, LocalDate.now())
+                max(ChronoUnit.DAYS.between(parsedDate, LocalDate.now()), 1)
             } else {
-                parsedDate.lengthOfMonth().toLong()
+                parsedDate.lengthOfMonth().toLong() + 1
             }
         }
     }

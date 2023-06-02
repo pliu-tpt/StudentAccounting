@@ -64,11 +64,11 @@ class SelectAmountFragment : SelectFragment() {
         }
 
         viewModel.selectedCurrency.observe(viewLifecycleOwner) {
-            binding.actvCurrency.setText(it.toString())
+            binding.actvCurrency.setText(it.toString(), false)
         }
 
         viewModel.preferredCurrency.observe(viewLifecycleOwner) {
-            binding.actvCurrency.setText(it.toString())
+            binding.actvCurrency.setText(it.toString(), false)
         }
 
         viewModel.selectedName.observe(viewLifecycleOwner) {
@@ -116,7 +116,7 @@ class SelectAmountFragment : SelectFragment() {
             } ?: run {
                 viewModel.preferredCurrency.value.toString()
             }
-            binding.actvCurrency.setText(currentCurrency)
+            binding.actvCurrency.setText(currentCurrency, false)
             adapter.notifyDataSetChanged()
         }
     }
