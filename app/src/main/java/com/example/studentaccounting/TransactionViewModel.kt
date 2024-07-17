@@ -16,6 +16,7 @@ import com.example.studentaccounting.db.entities.relations.OptionWithTotal
 import com.example.studentaccounting.db.entities.relations.TransactionWithConversion
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.*
 import javax.money.Monetary
 import javax.money.MonetaryException
@@ -46,9 +47,13 @@ class TransactionViewModel(private val dao:TransactionDao, private val currencyD
 
     var preferredCurrency = MutableLiveData<String>()
 
+    var filteredName = MutableLiveData<String>()
+
     val formatter : SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
 
     var transactionToEdit = MutableLiveData<Transaction>()
+
+    var filters = Filters()
 
     init {
         initSelection()
@@ -168,6 +173,12 @@ class TransactionViewModel(private val dao:TransactionDao, private val currencyD
 
         preferredCurrency.value = "SGD"
         selectedCurrency.value = preferredCurrency.value
+
+        filteredName.value = ""
+    }
+
+    fun updateFilteredName(name:String){
+        filteredName.value = name
     }
 
     fun updateIsSpending(bool:Boolean){

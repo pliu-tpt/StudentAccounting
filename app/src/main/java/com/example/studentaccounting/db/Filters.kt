@@ -12,5 +12,6 @@ data class Filters(
     // all the other filters
     var startMonth: MutableLiveData<String?> = MutableLiveData<String?>(),
     var endMonth: MutableLiveData<String?> = MutableLiveData<String?>(),
-    var isSortedByDate : Boolean = false // competing with isSorted by spending amount
+    var isSortedByDate : Boolean = false, // competing with isSorted by spending amount
+    var nameFilter: MutableLiveData<String> = MutableLiveData<String>(),
 )

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
@@ -122,6 +123,10 @@ class TransactionListFragment : Fragment() {
 
         binding.btnUpload.setOnClickListener {
             openImportMenu(it)
+        }
+
+        binding.actvSearch.doOnTextChanged { text, _, _, _ ->
+            viewModel.updateFilteredName(text.toString())
         }
 
 //        val navHostFragment = childFragmentManager.findFragmentById(R.id.topLayout) as NavHostFragment
@@ -252,7 +257,7 @@ class TransactionListFragment : Fragment() {
     private fun displayTransactionTypesList(){
         viewModel.preferredCurrency.observe(viewLifecycleOwner) {
             CoroutineScope(Dispatchers.Main).launch {
-                viewModel.getAllFilteredWithPrefCurrency(Filters(prefCurrency = viewModel.preferredCurrency, isSortedByDate = true))?.let { it1 -> adapter.setList(it1) }
+                viewModel.getAllFilteredWithPrefCurrency(Filters(prefCurrency = viewModel.preferredCurrency, isSortedByDate = true, nameFilter = viewModel.filteredName))?.let { it1 -> adapter.setList(it1) }
                 adapter.setPreferredCurrency(viewModel.preferredCurrency.value!!)
                 adapter.notifyDataSetChanged()
             }
@@ -264,10 +269,16 @@ class TransactionListFragment : Fragment() {
 //                adapter.notifyDataSetChanged()
 //            }
 //        }
+        viewModel.filteredName.observe(viewLifecycleOwner) {
+            CoroutineScope(Dispatchers.Main).launch {
+                viewModel.getAllFilteredWithPrefCurrency(Filters(prefCurrency = viewModel.preferredCurrency, isSortedByDate = true, nameFilter = viewModel.filteredName))?.let { it1 -> adapter.setList(it1) }
+                adapter.notifyDataSetChanged()
+            }
+        }
 
         viewModel.transactions.observe(viewLifecycleOwner) {
             CoroutineScope(Dispatchers.Main).launch {
-                viewModel.getAllFilteredWithPrefCurrency(Filters(prefCurrency = viewModel.preferredCurrency, isSortedByDate = true))?.let { it1 -> adapter.setList(it1) }
+                viewModel.getAllFilteredWithPrefCurrency(Filters(prefCurrency = viewModel.preferredCurrency, isSortedByDate = true, nameFilter = viewModel.filteredName))?.let { it1 -> adapter.setList(it1) }
                 adapter.notifyDataSetChanged()
             }
         }

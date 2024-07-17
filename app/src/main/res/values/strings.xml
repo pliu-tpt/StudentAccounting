@@ -52,4 +52,5 @@
     <string name="subcategory">Subcategory</string>
     <string name="date_format">yyyy-mm-dd</string>
     <string name="currency_menu">Change Preferred Currency</string>
+    <string name="search">Search...</string>
 </resources>

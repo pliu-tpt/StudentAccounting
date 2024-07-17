@@ -22,6 +22,7 @@ class FilterViewModel: ViewModel() {
         filters.cat.value = "-1"
         filters.isSorted.value = true
         filters.prefCurrency.value = "SGD"
+        filters.nameFilter.value = ""
     }
 
     fun updateMonthAndYear(month:Int?, year:Int?){

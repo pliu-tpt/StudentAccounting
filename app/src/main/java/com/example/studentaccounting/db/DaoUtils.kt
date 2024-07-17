@@ -27,7 +27,7 @@ public final class DaoUtils {
                 month.value?.let { if (it != "-1") filterConditions.add("STRFTIME('%m',transaction_date) = ?" to it) }
                 year.value?.let { if (it != "-1") filterConditions.add("STRFTIME('%Y',transaction_date) = ?" to it) }
                 cat.value?.let { if (it != "-1") filterConditions.add("transaction_category = ?" to it) }
-                // "subqueries" to filter  specific field
+                nameFilter.value?.let { if (it != "") filterConditions.add(("transaction_name LIKE '%'||?||'%'") to it) }
             }
             if (filterConditions.isEmpty()) {
                 return "SELECT * FROM transaction_table" to null // if no filters are used

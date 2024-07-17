@@ -51,10 +51,10 @@ class EditTransactionFragment : Fragment() {
 
         viewModel.transactionToEdit.observe(viewLifecycleOwner) {
             with (binding) {
-                actvCurrency.setText(it.currency)
-                actvCategory.setText(it.category)
-                actvSubcat.setText(it.subcategory)
-                actvType.setText(it.type)
+                actvCurrency.setText(it.currency, false)
+                actvCategory.setText(it.category, false)
+                actvSubcat.setText(it.subcategory, false)
+                actvType.setText(it.type, false)
                 etName2.setText(it.name)
                 etDate.setText(it.date)
                 etAmount.setText(it.amount.toString())
