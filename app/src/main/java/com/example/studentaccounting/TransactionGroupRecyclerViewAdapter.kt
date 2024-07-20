@@ -19,7 +19,7 @@ class TransactionGroupRecyclerViewAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val transactionList = ArrayList<TransactionWithConversion>() // list of transactions
-    private val transactionGroups = ArrayList<TransactionGroup>() // groupTransactionsByDate(transactionList)
+    val transactionGroups = ArrayList<TransactionGroup>() // groupTransactionsByDate(transactionList)
 
     private fun groupTransactionsByDate(transactions: List<TransactionWithConversion>): List<TransactionGroup> {
         val groups = mutableListOf<TransactionGroup>()
@@ -41,7 +41,7 @@ class TransactionGroupRecyclerViewAdapter(
             }
             TRANSACTION_ITEM_VIEW_TYPE -> {
                 val binding = TransactionItemBinding.inflate(inflater,parent, false)
-                return TransactionGroupViewHolder(binding)
+                TransactionGroupViewHolder(binding)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -72,7 +72,7 @@ class TransactionGroupRecyclerViewAdapter(
         var count = 0
         for (group in transactionGroups) {
             if (position == count) {
-                return group
+                return group.transactions[0]
             }
             count += group.transactions.size + 1 // Add 1 for group item
             if (position < count) {
