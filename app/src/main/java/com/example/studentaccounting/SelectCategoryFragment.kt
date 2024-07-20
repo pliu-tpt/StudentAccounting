@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.studentaccounting.databinding.CommonNewAddLayoutBinding
 import com.example.studentaccounting.databinding.FragmentSelectCategoryBinding
+import com.example.studentaccounting.db.entities.relations.TransactionWithConversion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -56,7 +58,7 @@ class SelectCategoryFragment : SelectFragment() {
         initNewAdd(fragmentString)
 
         viewModel.selectedCat.observe(viewLifecycleOwner) {
-            newAddLayoutBinding.etNew.setText(it.toString())
+            newAddLayoutBinding.etNew.setText(it.toString()) // after having pressed "Add"
         }
 
         newAddLayoutBinding.btnNewNext.setOnClickListener {
@@ -70,6 +72,11 @@ class SelectCategoryFragment : SelectFragment() {
                 ).show()
             }
         }
+
+        newAddLayoutBinding.etNew.doOnTextChanged { text, _, _, _ ->
+            viewModel.updateTypedCat(text.toString())
+        }
+
 
         return binding.root
     }
@@ -119,6 +126,11 @@ class SelectCategoryFragment : SelectFragment() {
     }
     private fun displayCategoryList(){
         viewModel.categories.observe(viewLifecycleOwner) {
+            adapter.setList(it)
+            adapter.notifyDataSetChanged()
+        }
+
+        viewModel.filteredCategories.observe(viewLifecycleOwner) {
             adapter.setList(it)
             adapter.notifyDataSetChanged()
         }

@@ -3,6 +3,7 @@ package com.example.studentaccounting
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.studentaccounting.TransactionListFragment.Companion.MYTAG
@@ -14,6 +15,8 @@ import com.example.studentaccounting.db.entities.Transaction
 import com.example.studentaccounting.db.entities.relations.OptionWithDateAndTotal
 import com.example.studentaccounting.db.entities.relations.OptionWithTotal
 import com.example.studentaccounting.db.entities.relations.TransactionWithConversion
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -43,8 +46,6 @@ class TransactionViewModel(private val dao:TransactionDao, private val currencyD
     var selectedTypeFrom = MutableLiveData<String>()
     var selectedTypeTo = MutableLiveData<String>()
 
-    var selectedSubcategories : List<String>?=null
-
     var preferredCurrency = MutableLiveData<String>()
 
     var filteredName = MutableLiveData<String>()
@@ -54,6 +55,19 @@ class TransactionViewModel(private val dao:TransactionDao, private val currencyD
     var transactionToEdit = MutableLiveData<Transaction>()
 
     var filters = Filters()
+
+    var typedCat = MutableLiveData<String>()
+    var typedSubCat = MutableLiveData<String>()
+
+    var selectedSubcategories : LiveData<List<String>> = Transformations.switchMap(typedSubCat){
+        Transformations.switchMap(selectedCat){ it1 ->
+            dao.getSubcategoryByCategory(it1, it)
+        }
+    }
+
+    var filteredCategories : LiveData<List<String>> = Transformations.switchMap(typedCat){
+        dao.getFilteredCategories(it)
+    }
 
     init {
         initSelection()
@@ -171,7 +185,7 @@ class TransactionViewModel(private val dao:TransactionDao, private val currencyD
         selectedTypeFrom.value = ""
         selectedTypeTo.value = ""
 
-        preferredCurrency.value = "SGD"
+        preferredCurrency.value = "EUR"
         selectedCurrency.value = preferredCurrency.value
 
         filteredName.value = ""
@@ -191,7 +205,7 @@ class TransactionViewModel(private val dao:TransactionDao, private val currencyD
 
     suspend fun updateSelectedCat(cat:String){
         selectedCat.postValue(cat)
-        selectedSubcategories = dao.getSubcategory(cat) // list of subcats given the category
+//        selectedSubcategories = dao.getSubcategory(cat) // list of subcats given the category
     }
 
     suspend fun getTransactionsByMonthAndYear(month: Int, year: Int): List<Transaction> {
@@ -200,6 +214,14 @@ class TransactionViewModel(private val dao:TransactionDao, private val currencyD
             "%02d".format(year)
         )
     }
+
+//    suspend fun getFilteredSubCategories(): List<String>? {
+//        return filteredSubCategories.value?.let { typedSubCat.value?.let { it1 ->
+//            dao.getFilteredSubCategories(
+//                it1
+//            )
+//        } }
+//    }
 
     suspend fun getTypeAggregate(): List<OptionWithTotal>? {
         return preferredCurrency.value?.let { dao.getTypeAggregate(it) }
@@ -270,6 +292,14 @@ class TransactionViewModel(private val dao:TransactionDao, private val currencyD
 
     fun updateIsTransfer(bool: Boolean){
         isTransfer = bool
+    }
+
+    fun updateTypedCat(substring: String){
+        typedCat.value = substring
+    }
+
+    fun updateTypedSubCat(substring: String){
+        typedSubCat.value = substring
     }
 
 }
