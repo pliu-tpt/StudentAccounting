@@ -58,8 +58,23 @@ interface TransactionDao {
     )
     fun getAllSubcategory(): LiveData<List<String>> // separate co.rout.
 
-    @Query("SELECT DISTINCT transaction_subcategory FROM transaction_table WHERE transaction_category = :category")
-    suspend fun getSubcategory(category: String): List<String>
+    @Query(
+        "SELECT transaction_category " +
+                "FROM (SELECT transaction_category, COUNT(*) " +
+                "FROM transaction_table " +
+                "GROUP BY transaction_category " +
+                "ORDER BY COUNT(*) DESC)" +
+        "WHERE transaction_category LIKE '%' || :substring || '%'"
+    )
+    fun getFilteredCategories(substring: String): LiveData<List<String>> // separate co.rout.
+
+    @Query(
+        "SELECT DISTINCT transaction_subcategory " +
+                "FROM transaction_table " +
+                "WHERE transaction_category = :category " +
+                "AND transaction_subcategory LIKE '%' || :substring || '%'"
+    )
+    fun getSubcategoryByCategory(category: String, substring: String): LiveData<List<String>>
 
     @Query("SELECT DISTINCT transaction_currency FROM transaction_table")
     fun getAllCurrency(): LiveData<List<String>> // separate co.rout.

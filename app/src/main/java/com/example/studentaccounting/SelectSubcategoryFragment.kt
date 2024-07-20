@@ -8,10 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.studentaccounting.databinding.CommonNewAddLayoutBinding
 import com.example.studentaccounting.databinding.FragmentSelectSubcategoryBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class SelectSubcategoryFragment : SelectFragment() {
@@ -69,6 +73,10 @@ class SelectSubcategoryFragment : SelectFragment() {
             }
         }
 
+        newAddLayoutBinding.etNew.doOnTextChanged { text, _, _, _ ->
+            viewModel.updateTypedSubCat(text.toString())
+        }
+
         // Inflate the layout for this fragment
         return binding.root
     }
@@ -95,10 +103,8 @@ class SelectSubcategoryFragment : SelectFragment() {
     }
 
     private fun displaySubcategoryList(){
-        viewModel.subcategories.observe(viewLifecycleOwner) {
-            Log.i("MYTAG",viewModel.selectedSubcategories.toString())
-
-            viewModel.selectedSubcategories?.let { it1 -> adapter.setList(it1) }
+        viewModel.selectedSubcategories.observe(viewLifecycleOwner) {
+            adapter.setList(it)
             adapter.notifyDataSetChanged()
         }
     }
