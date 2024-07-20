@@ -256,6 +256,7 @@ class TransactionListFragment : Fragment() {
             selectedTransaction, view -> transactionListItemLongClicked(selectedTransaction, view)
         }
         binding.rvTransactions.adapter = adapter
+        binding.rvTransactions.addItemDecoration(StickyHeaderDecoration(adapter, requireContext()))
 
         displayTransactionTypesList()
     }
