@@ -72,7 +72,7 @@ class TransactionGroupRecyclerViewAdapter(
         var count = 0
         for (group in transactionGroups) {
             if (position == count) {
-                return group.transactions[0]
+                return group
             }
             count += group.transactions.size + 1 // Add 1 for group item
             if (position < count) {

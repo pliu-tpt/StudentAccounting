@@ -3,7 +3,6 @@ package com.example.studentaccounting
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Rect
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,16 +65,10 @@ class StickyHeaderDecoration(private val adapter: TransactionGroupRecyclerViewAd
     }
 
     private fun measureLayout(parent: ViewGroup, header: View) {
-        if (header !is ViewGroup) {
-            Log.e("StickyHeaderDecoration", "Header view is not a ViewGroup")
-            return
-        }
         val widthSpec = View.MeasureSpec.makeMeasureSpec(parent.width, View.MeasureSpec.EXACTLY)
         val heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         header.measure(widthSpec, heightSpec)
-        header.layout(0, 0, header.measuredWidth, header.measuredHeight)
-
-        Log.d("StickyHeaderDecoration", "Header measured width: ${header.measuredWidth}, height: ${header.measuredHeight}")
+        header.layout(0, 0, header.measuredWidth, 0)
     }
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
@@ -93,22 +86,8 @@ class StickyHeaderDecoration(private val adapter: TransactionGroupRecyclerViewAd
     }
 
     private fun isNewHeader(position: Int): Boolean {
-        val prevHeaderPosition = getHeaderPosition(position - 1)
-        val currentHeaderPosition = getHeaderPosition(position)
+        val prevHeaderPosition = getHeaderGroupForPosition(position - 1)
+        val currentHeaderPosition = getHeaderGroupForPosition(position)
         return prevHeaderPosition != currentHeaderPosition
-    }
-
-    private fun getHeaderPosition(position: Int): TransactionGroup? {
-        var count = 0
-        for (group in adapter.transactionGroups) {  // Reference to adapter’s transaction groups
-            if (position == count) {
-                return group
-            }
-            count += group.transactions.size + 1 // Add 1 for the group item
-            if (position < count) {
-                return group
-            }
-        }
-        return null
     }
 }
