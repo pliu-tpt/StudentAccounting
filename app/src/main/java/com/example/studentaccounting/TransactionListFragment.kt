@@ -31,6 +31,8 @@ import java.io.InputStream
 import java.io.InputStreamReader
 import java.io.OutputStream
 import java.lang.reflect.Type
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class TransactionListFragment : Fragment() {
@@ -166,7 +168,9 @@ class TransactionListFragment : Fragment() {
                 val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                     addCategory(Intent.CATEGORY_OPENABLE)
                     type = "text/comma-separated-values" // "application/json"
-                    putExtra(Intent.EXTRA_TITLE, "data.csv")
+                    val date = Calendar.getInstance().time
+                    val formatter = SimpleDateFormat("yyyyMMdd-HHmm")
+                    putExtra(Intent.EXTRA_TITLE, "acc-${formatter.format(date)}.csv")
                 }
                 extension = ext
                 resultExportLauncher.launch(intent)
@@ -177,7 +181,9 @@ class TransactionListFragment : Fragment() {
                 val intent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
                     addCategory(Intent.CATEGORY_OPENABLE)
                     type = "application/json"
-                    putExtra(Intent.EXTRA_TITLE, "data.json")
+                    val date = Calendar.getInstance().time
+                    val formatter = SimpleDateFormat("yyyyMMdd-HHmm")
+                    putExtra(Intent.EXTRA_TITLE, "acc-${formatter.format(date)}.json")
                 }
                 extension = ext
                 resultExportLauncher.launch(intent)
