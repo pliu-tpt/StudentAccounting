@@ -1,9 +1,12 @@
 package com.example.studentaccounting
 
 import android.app.AlertDialog
+import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -17,6 +20,7 @@ import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.example.studentaccounting.databinding.ActivityMainBinding
 import com.example.studentaccounting.db.AppDatabase
 import com.google.android.material.navigation.NavigationBarView
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.launch
 
 //import com.example.studentaccounting.db.TransactionDatabase
@@ -114,6 +118,24 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding.bNavView.setOnItemSelectedListener(mOnItemSelectedListener)
     }
 
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        // unselecting the edit text when touching outside
+        if (ev.action == MotionEvent.ACTION_DOWN) {
+            val focusedView = currentFocus
+            if (focusedView is TextInputEditText) {
+                val outRect = Rect()
+                focusedView.getGlobalVisibleRect(outRect)
+                if (!outRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
+                    focusedView.clearFocus()
+                    // hiding keyboard
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(focusedView.windowToken, 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_settings -> {
@@ -209,10 +231,7 @@ class OptionAdapter(
     }
 }
 
-// TODO("Import/Export Table")
 // TODO("Retrofit, App Data for Google Drive: Synchronize databases")
-// TODO("General Settings : Add a possibility to change prefCurrency")
-// TODO("Line Graphs : Select two months and a cat and the line graph is generated using AACharts")
 // TODO("A notification button to add a transaction really quickly")
 
 // Test Graph Commit
