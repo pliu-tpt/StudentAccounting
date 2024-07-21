@@ -15,11 +15,8 @@ import com.example.studentaccounting.db.entities.Transaction
 import com.example.studentaccounting.db.entities.relations.OptionWithDateAndTotal
 import com.example.studentaccounting.db.entities.relations.OptionWithTotal
 import com.example.studentaccounting.db.entities.relations.TransactionWithConversion
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.*
 import javax.money.Monetary
 import javax.money.MonetaryException
@@ -153,10 +150,6 @@ class TransactionViewModel(private val dao:TransactionDao, private val currencyD
 
         }
         initSelection()
-    }
-
-    fun updateTransaction(transaction: Transaction) = viewModelScope.launch {
-        dao.updateTransaction(transaction)
     }
 
     fun deleteTransaction(transaction: Transaction) = viewModelScope.launch {
@@ -300,6 +293,11 @@ class TransactionViewModel(private val dao:TransactionDao, private val currencyD
 
     fun updateTypedSubCat(substring: String){
         typedSubCat.value = substring
+    }
+
+    fun copyTransaction(transaction: Transaction) = viewModelScope.launch {
+        dao.insertTransaction(transaction.copy(id=0,date=formatter.format(Date())))
+        Log.i(MYTAG, "Transaction ${transaction.id} copied: ${transaction.name}, ${transaction.amount}, ${transaction.currency}")
     }
 
 }
