@@ -321,6 +321,12 @@ class TransactionListFragment : Fragment() {
                     viewModel.deleteTransaction(transaction)
                     true
                 }
+                R.id.copy -> {
+                    // Handle Copy option
+                    Log.i("MYTAG", "Copy transaction number ${transaction.id}")
+                    viewModel.copyTransaction(transaction)
+                    true
+                }
                 else -> false
             }
         }
