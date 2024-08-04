@@ -77,7 +77,7 @@ class SelectTransactionTypeFragment : SelectFragment() {
 //    }
 
     private fun initNewAdd(string: String){
-        newAddLayoutBinding.etNew.hint = string
+        newAddLayoutBinding.etLayout.hint = string
     }
 
     private fun initRecyclerView(){

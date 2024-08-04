@@ -12,7 +12,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.studentaccounting.databinding.CommonNewAddLayoutBinding
 import com.example.studentaccounting.databinding.FragmentSelectCategoryBinding
-import com.example.studentaccounting.db.entities.relations.TransactionWithConversion
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -100,7 +99,7 @@ class SelectCategoryFragment : SelectFragment() {
 //    }
 
     private fun initNewAdd(string: String){
-        newAddLayoutBinding.etNew.hint = string
+        newAddLayoutBinding.etLayout.hint = string
     }
 
     override fun onDestroy() {
